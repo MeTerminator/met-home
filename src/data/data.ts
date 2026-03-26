@@ -9,6 +9,7 @@ export const links = {
   navigation: 'https://blog.met6.top:444/met-website',
   about: 'https://blog.met6.top:444/about-me',
   links: 'https://blog.met6.top:444/links',
+  ocpic: 'https://blog.met6.top:444/archives/met-she-ding-tu-yi-lan',
 
   sourceCode: 'https://github.com/MeTerminator/MeT-Home',
 };
