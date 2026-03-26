@@ -23,7 +23,7 @@ const onMouseLeave = () => {
     <Header color="Light" />
 
     <div class="relative z-50 flex items-center justify-center w-full max-w-[1200px] mx-auto">
-      <AboutCard class="w-full max-w-[850px]" @mouseenter="onMouseEnter" @mouseleave="onMouseLeave" />
+      <AboutCard class="w-full max-w-[850px] backdrop-blur-md" @mouseenter="onMouseEnter" @mouseleave="onMouseLeave" />
     </div>
 
     <BgImagesContainer :bgImagesSharedRef="bgImagesSharedRef" />

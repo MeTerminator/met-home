@@ -9,7 +9,7 @@
                 :colors="['#c084fc', '#f472b6', '#38bdf8']">
                 <div ref="cardRef"
                     class="card relative overflow-hidden flex justify-between mx-auto w-full h-full p-6 md:p-10"
-                    style="background-color: #02021122; border-radius: 30px; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: 2.4px 1.9px 3.2px -9px rgba(0, 0, 40, 0.008), 18px 14px 80px -9px rgba(0, 0, 0, 0.09);">
+                    style="background-color: rgba(2, 2, 17, 0.65); border-radius: 30px; backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%); border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 2.4px 1.9px 3.2px -9px rgba(0, 0, 0, 0.5), 18px 14px 80px -9px rgba(0, 0, 0, 0.3);">
 
                     <!-- Glowing Background Blob -->
                     <div class="background-glow pointer-events-none absolute rounded-full transition-colors duration-200"
