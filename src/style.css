@@ -1,0 +1,236 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #ffe600;
+  --color-dark: #0e0d0c;
+  --color-secondary-dark: #404040;
+  --color-secondary-half-dark: #1a1a1a;
+  --color-light: #ffffff;
+  --color-secondary-light: #bfbfbf;
+  --color-secondary-half-light: #f2f2f2;
+  --color-white: #fff;
+
+  --spacing-padding-x: 6vw;
+  --spacing-padding-y: 110px;
+
+  /* Fonts */
+  --font-sans: "DM Sans", sans-serif;
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --colorPrimary: #ffe600;
+    --colorDark: #0e0d0c;
+    --colorSecondaryDark: #404040;
+    --colorSecondaryHalfDark: #1a1a1a;
+    --colorLight: #ffffff;
+    --colorSecondaryLight: #bfbfbf;
+    --colorSecondaryHalfLight: #f2f2f2;
+    --colorWhite: #fff;
+    --paddingX: 6vw;
+    --paddingY: 110px;
+    --maxWidth: 1690px;
+    --fontExtraSmallest: 10px;
+    --fontExtraSmall: 18px;
+    --fontSmall: 40px;
+    --fontBig: 66px;
+    --fontExtraBig: clamp(182px, 12vw, 220px);
+  }
+
+  @media only screen and (max-width: 768px) {
+    :root {
+      --fontExtraSmall: 16px;
+      --fontSmall: 4.5vw;
+      --fontBig: 8.5vw;
+      --fontExtraBig: 23vw;
+    }
+  }
+
+  @media only screen and (max-width: 500px) {
+    :root {
+      --paddingY: 80px;
+    }
+  }
+
+  * {
+    border-color: var(--border);
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background: linear-gradient(90deg, var(--colorWhite) 0%, var(--colorSecondaryHalfLight) 100%);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    font-weight: 450;
+  }
+
+  body::-webkit-scrollbar {
+    width: 0;
+  }
+
+  *::selection {
+    color: var(--colorDark);
+    background-color: var(--colorPrimary);
+  }
+
+  a {
+    text-decoration: none;
+    color: var(--colorLight);
+  }
+
+  ul {
+    list-style: none;
+  }
+}
+
+@layer utilities {
+  .px-paddingX {
+    padding-left: var(--paddingX);
+    padding-right: var(--paddingX);
+  }
+
+  .py-paddingY {
+    padding-top: var(--paddingY);
+    padding-bottom: var(--paddingY);
+  }
+
+  .max-w-maxWidth {
+    max-width: var(--maxWidth);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .lightGradient {
+    background: linear-gradient(90deg, var(--colorWhite) 0%, var(--colorSecondaryHalfLight) 100%);
+  }
+
+  .darkGradient {
+    background: linear-gradient(90deg, #000000 0%, #222121 100%);
+  }
+
+  /* Cursors */
+  .cursor1 {
+    position: fixed;
+    width: 16px;
+    height: 16px;
+    background-color: var(--colorPrimary);
+    border-radius: 50%;
+    left: 0;
+    top: 0;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+  }
+
+  .cursor2 {
+    position: fixed;
+    width: 24px;
+    height: 24px;
+    border: 1px solid var(--colorPrimary);
+    border-radius: 50%;
+    left: 0;
+    top: 0;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    z-index: 999;
+  }
+
+  @media (hover: none) {
+
+    .cursor1,
+    .cursor2 {
+      display: none;
+    }
+  }
+
+  /* Fullpage section utility overrides */
+  .section {
+    overflow: hidden !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    height: 100% !important;
+    width: 100% !important;
+    min-height: 100dvh !important;
+    position: relative !important;
+    isolation: isolate !important;
+    padding-inline: var(--paddingX) !important;
+  }
+
+  .fp-overflow {
+    height: 100% !important;
+    width: 100% !important;
+    max-height: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden;
+    overflow-y: hidden !important;
+    display: flex !important;
+    flex-direction: column;
+    align-items: center !important;
+    justify-content: center !important;
+    isolation: isolate;
+  }
+
+  .fp-watermark {
+    display: none !important;
+  }
+
+  /* Bulge Curve Effects */
+  .rounded__div__down,
+  .rounded__div__up {
+    height: 0vh;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    overflow: hidden;
+    z-index: 999;
+  }
+
+  .rounded__div__down {
+    top: 0;
+  }
+
+  .rounded__div__up {
+    bottom: 0;
+  }
+
+  .round__bg__down {
+    height: 775%;
+    width: 150%;
+    position: absolute;
+    top: 0px;
+    left: 50%;
+    border-radius: 50%;
+    transform: translateX(-50%);
+  }
+
+  .round__bg__up {
+    height: 775%;
+    width: 150%;
+    position: absolute;
+    bottom: 0px;
+    left: 50%;
+    border-radius: 50%;
+    transform: translateX(-50%);
+  }
+
+  /* Split Type overrides */
+  #my-text .line,
+  #my-text2 .line {
+    overflow: hidden;
+  }
+}
