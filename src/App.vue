@@ -25,8 +25,20 @@ const options = {
     if (destination.anchor === 'about') {
       window.dispatchEvent(new Event('replayContactAnimation'));
     }
+    if (destination.anchor === 'hero') {
+      // Snap back to hidden state first, then play enter animation
+      window.dispatchEvent(new Event('resetHeroAnimation'));
+      setTimeout(() => {
+        window.dispatchEvent(new Event('replayHeroAnimation'));
+      }, 50);
+    }
   },
-  onLeave: (_origin: any, destination: any, direction: string) => {
+  onLeave: (origin: any, destination: any, direction: string) => {
+    // Play exit animation for Hero AnimatedContent elements
+    if (origin.anchor === 'hero') {
+      window.dispatchEvent(new Event('leaveHeroAnimation'));
+    }
+
     // Patches border that comes when snapping between dark/light
     if (destination.anchor === 'about') {
       document.body.classList.add('darkGradient');

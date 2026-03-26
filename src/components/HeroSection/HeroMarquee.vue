@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted } from 'vue';
 import { gsap } from 'gsap';
+import AnimatedContent from '../ui/AnimatedContent.vue';
 
 onMounted(() => {
   function roll(targets: string, vars: gsap.TweenVars = {}, reverse?: boolean) {
@@ -63,14 +64,39 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="wrapperRollingText anime pointer-events-none z-20 select-none rounded-3xl tracking-[-0.1em]">
-    <div class="rollingText md:text-[100px]!">
-      MeTerminator&nbsp;<span class="text-gray-500">//</span>&nbsp;Dreaming<span
-        class="text-blue-500">.</span>&nbsp;<span class="text-gray-500">\\</span>&nbsp;Exploring<span
-        class="text-blue-500">.</span>&nbsp;<span class="text-gray-500">//</span>&nbsp;Designing<span
-        class="text-blue-500">.</span>&nbsp;<span class="text-gray-500">\\</span>&nbsp;Developing<span
-        class="text-blue-500">.</span>&nbsp;<span class="text-gray-500">//</span>&nbsp;Exploiting<span
-        class="text-blue-500">.</span>&nbsp;<span class="text-gray-500">\\</span>&nbsp;
-    </div>
+  <div class="wrapperRollingText anime pointer-events-none z-5 select-none rounded-3xl -tracking-widest">
+    <AnimatedContent direction="vertical" :distance="80" :delay="0.5" triggerEvent="replayHeroAnimation"
+      resetEvent="resetHeroAnimation" leaveEvent="leaveHeroAnimation">
+      <div class="rollingText md:text-[100px]!">
+        MeTerminator&nbsp;<span class="text-gray-500">//</span>&nbsp;Dreaming<span
+          class="text-blue-500">.</span>&nbsp;<span class="text-gray-500">\\</span>&nbsp;Exploring<span
+          class="text-blue-500">.</span>&nbsp;<span class="text-gray-500">//</span>&nbsp;Designing<span
+          class="text-blue-500">.</span>&nbsp;<span class="text-gray-500">\\</span>&nbsp;Developing<span
+          class="text-blue-500">.</span>&nbsp;<span class="text-gray-500">//</span>&nbsp;Exploiting<span
+          class="text-blue-500">.</span>&nbsp;<span class="text-gray-500">\\</span>&nbsp;
+      </div>
+    </AnimatedContent>
   </div>
 </template>
+
+<style scoped>
+.wrapperRollingText {
+  /* Fades the marquee at the edges and slightly in the center to create depth with ImageSequence */
+  mask-image: linear-gradient(90deg,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 1) 15%,
+      rgba(0, 0, 0, 0.7) 35%,
+      rgba(0, 0, 0, 0.1) 50%,
+      rgba(0, 0, 0, 0.7) 65%,
+      rgba(0, 0, 0, 1) 85%,
+      rgba(0, 0, 0, 0) 100%);
+  -webkit-mask-image: linear-gradient(90deg,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 1) 15%,
+      rgba(0, 0, 0, 0.7) 35%,
+      rgba(0, 0, 0, 0.1) 50%,
+      rgba(0, 0, 0, 0.7) 65%,
+      rgba(0, 0, 0, 1) 85%,
+      rgba(0, 0, 0, 0) 100%);
+}
+</style>

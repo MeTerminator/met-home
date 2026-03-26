@@ -17,6 +17,10 @@ interface AnimatedContentProps {
     alwaysPlay?: boolean;
     /** Custom event name to trigger (re)play. Useful in fullpage.js environments. */
     triggerEvent?: string;
+    /** Custom event name to reset back to initial state instantly. */
+    resetEvent?: string;
+    /** Custom event name to play the exit (reverse) animation. */
+    leaveEvent?: string;
 }
 
 const props = withDefaults(defineProps<AnimatedContentProps>(), {
@@ -32,7 +36,9 @@ const props = withDefaults(defineProps<AnimatedContentProps>(), {
     delay: 0,
     className: '',
     alwaysPlay: false,
-    triggerEvent: 'replayContactAnimation'
+    triggerEvent: 'replayContactAnimation',
+    resetEvent: 'resetContactAnimation',
+    leaveEvent: '',
 });
 
 const emit = defineEmits<{
@@ -88,6 +94,30 @@ const handleTriggerEvent = () => playAnimation();
 
 const handleResetEvent = () => setInitialState();
 
+const playExitAnimation = () => {
+    const el = containerRef.value;
+    if (!el) return;
+
+    if (anim) {
+        anim.kill();
+    }
+
+    const axis = props.direction === 'horizontal' ? 'x' : 'y';
+    // Exit goes to the OPPOSITE side from which the element entered.
+    // Enter: offset → 0.  Exit: 0 → -offset (slide out the other way).
+    const offset = props.reverse ? -props.distance : props.distance;
+
+    anim = gsap.to(el, {
+        [axis]: -offset,
+        scale: props.scale,
+        opacity: props.animateOpacity ? props.initialOpacity : 1,
+        duration: props.duration * 0.85,
+        ease: 'power2.in',
+    });
+};
+
+const handleLeaveEvent = () => playExitAnimation();
+
 onMounted(() => {
     setInitialState();
 
@@ -97,7 +127,10 @@ onMounted(() => {
     }
 
     window.addEventListener(props.triggerEvent, handleTriggerEvent);
-    window.addEventListener('resetContactAnimation', handleResetEvent);
+    window.addEventListener(props.resetEvent, handleResetEvent);
+    if (props.leaveEvent) {
+        window.addEventListener(props.leaveEvent, handleLeaveEvent);
+    }
 });
 
 watch(
@@ -124,7 +157,10 @@ watch(
 onUnmounted(() => {
     if (anim) anim.kill();
     window.removeEventListener(props.triggerEvent, handleTriggerEvent);
-    window.removeEventListener('resetContactAnimation', handleResetEvent);
+    window.removeEventListener(props.resetEvent, handleResetEvent);
+    if (props.leaveEvent) {
+        window.removeEventListener(props.leaveEvent, handleLeaveEvent);
+    }
 });
 </script>
 
