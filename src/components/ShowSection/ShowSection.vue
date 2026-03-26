@@ -1,15 +1,17 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { gsap } from 'gsap';
 import Header from '../Header.vue';
 import Bulge from '../ui/Bulge.vue';
 import Tilted from '../ui/Tilted.vue';
-import MouseFollowBorder from '../ui/MouseFollowBorder.vue';
+import BorderGlow from '../ui/BorderGlow.vue';
 import AnimatedContent from '../ui/AnimatedContent.vue';
 
-// false = main side active (left image visible, card on right)
-// true  = furry side active (right image visible, card on left)
-const isFurry = ref(false);
+// true  = furry side active (right image visible, card on left)  — DEFAULT
+// false = main side active  (left image visible, card on right)  — DARK THEME
+const isFurry = ref(true);
+// Dark theme is active whenever the main (left) image is showing
+const isDark = computed(() => !isFurry.value);
 let isAnimating = false;
 
 const leftImgRef = ref<HTMLElement | null>(null);
@@ -20,7 +22,7 @@ const cardRef = ref<HTMLElement | null>(null);
 
 function imgReset() {
   isAnimating = false;
-  isFurry.value = false;
+  isFurry.value = true;  // default is furry
   const L = leftImgRef.value;
   const R = rightImgRef.value;
   if (!L || !R) return;
@@ -32,12 +34,12 @@ function imgEnter() {
   const L = leftImgRef.value;
   const R = rightImgRef.value;
   if (!L || !R) return;
-  // Snap to hidden first
+  // Snap both to hidden first
   gsap.set(L, { x: '-15%', opacity: 0 });
   gsap.set(R, { x: '15%', opacity: 0 });
-  // Only left (main) slides in on enter
-  gsap.to(L, { x: '0%', opacity: 1, duration: 0.85, ease: 'power3.out' });
-  // Right stays hidden (isFurry is false at entry)
+  // Default is furry (right), so show RIGHT on enter
+  gsap.to(R, { x: '0%', opacity: 1, duration: 0.85, ease: 'power3.out' });
+  // Left stays hidden (isFurry is true at entry)
 }
 
 function imgLeave() {
@@ -94,10 +96,14 @@ function toggle() {
 </script>
 
 <template>
-  <section class="section section__2 second lightGradient relative w-full h-full"
+  <section
+    :class="['section section__2 second lightGradient relative w-full h-full', isDark ? 'show-section--dark' : '']"
     style="padding-inline: 0 !important; overflow: hidden !important;">
-    <Bulge type="Dark" />
-    <Header color="Dark" />
+    <Bulge :type="isDark ? 'Light' : 'Dark'" />
+    <Header :color="isDark ? 'Light' : 'Dark'" />
+
+    <!-- Dark background overlay — fades in when main (dark) mode is active -->
+    <div class="show-dark-overlay" :style="{ opacity: isDark ? 1 : 0 }"></div>
 
     <!-- ── Background Images ─────────────────────────────────────── -->
 
@@ -119,7 +125,16 @@ function toggle() {
       <!-- GSAP target: only x / opacity animated here during toggle -->
       <div ref="cardRef">
         <Tilted width="340px" height="auto" :rotateAmplitude="10" :scale="true" cardClass="">
-          <MouseFollowBorder className="show-card__inner">
+          <BorderGlow
+            class-name="show-card__inner"
+            background-color="rgba(255,255,255,0.05)"
+            :border-radius="20"
+            glow-color="0 85 65"
+            :glow-intensity="1.1"
+            :colors="['#ef4444', '#2600ff', '#ff9999']"
+            :fill-opacity="0.35"
+            :cone-spread="22"
+          >
             <div class="show-card__body">
               <p class="show-card__label">{{ isFurry ? '— Furry Side' : '— Main Side' }}</p>
 
@@ -134,7 +149,7 @@ function toggle() {
                 </svg>
               </button>
             </div>
-          </MouseFollowBorder>
+          </BorderGlow>
         </Tilted>
       </div>
     </AnimatedContent>
@@ -142,17 +157,26 @@ function toggle() {
 </template>
 
 <style scoped>
+/* ── Dark background overlay ── */
+.show-dark-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #000000 0%, #1a1a1a 100%);
+  opacity: 0;
+  transition: opacity 0.55s ease;
+  z-index: 0;
+  pointer-events: none;
+}
+
 /* ── Background image panels ── */
 .show-bg {
-  /* Position relative to the section (which = viewport) */
   position: absolute !important;
   top: 0;
   bottom: 0;
-  width: 50% !important;
+  width: 70% !important;
   height: 100% !important;
   overflow: hidden;
   pointer-events: none;
-  /* Images below the card */
   z-index: 1;
 }
 
@@ -184,16 +208,15 @@ function toggle() {
   object-position: right center;
 }
 
-/* ── Card wrapper: positions the half-panel that holds the card ── */
+/* ── Card wrapper: positions the 30% panel that holds the card ── */
 .show-card-wrapper {
   position: absolute !important;
   top: 0;
   bottom: 0;
-  width: 50% !important;
+  width: 30% !important;
   display: flex !important;
   align-items: center;
   justify-content: center;
-  /* Card always ABOVE images */
   z-index: 10;
   pointer-events: none;
 }
@@ -216,7 +239,6 @@ function toggle() {
 /* ── Card inner look ── */
 .show-card__inner {
   padding: 2rem 2rem 1.75rem;
-  background: rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border-radius: 24px;
@@ -259,9 +281,9 @@ function toggle() {
   gap: 8px;
   padding: 10px 22px;
   border-radius: 999px;
-  border: 2px solid var(--colorDark);
+  border: 2px solid var(--color-red-700);
   background: transparent;
-  color: var(--colorDark);
+  color: var(--color-red-700);
   font-family: inherit;
   font-size: 13px;
   font-weight: 700;
@@ -278,7 +300,7 @@ function toggle() {
   content: '';
   position: absolute;
   inset: 0;
-  background: var(--colorDark);
+  background: var(--color-red-700);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.35s ease;
@@ -302,5 +324,36 @@ function toggle() {
 
 .show-card__btn:hover .show-card__btn-arrow {
   transform: translateX(3px);
+}
+
+/* ── Dark mode overrides (active when main image is showing) ── */
+:global(.show-section--dark) .show-card__inner {
+  background: rgba(10, 10, 10, 0.45);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
+  transition: background 0.5s ease, box-shadow 0.5s ease;
+}
+
+:global(.show-section--dark) .show-card__label {
+  color: var(--colorSecondaryLight);
+  transition: color 0.4s ease;
+}
+
+:global(.show-section--dark) .show-card__description {
+  color: var(--colorSecondaryHalfLight);
+  transition: color 0.4s ease;
+}
+
+:global(.show-section--dark) .show-card__btn {
+  border-color: rgba(255, 255, 255, 0.75);
+  color: rgba(255, 255, 255, 0.9);
+  transition: border-color 0.4s ease, color 0.3s ease;
+}
+
+:global(.show-section--dark) .show-card__btn::before {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+:global(.show-section--dark) .show-card__btn:hover {
+  color: var(--colorDark);
 }
 </style>

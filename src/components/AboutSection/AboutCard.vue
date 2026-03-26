@@ -4,10 +4,12 @@
         <AnimatedContent :distance="50" direction="vertical" :reverse="false" :duration="1.1" ease="power3.out"
             :initial-opacity="0" :animate-opacity="true" :scale="1.1" :threshold="0" :delay="0.1"
             @complete="onAnimComplete">
-            <MouseFollowBorder>
+            <BorderGlow :edgeSensitivity="30" glowColor="40 80 80" backgroundColor="#06001000" :borderRadius="28"
+                :glowRadius="40" :glowIntensity="1" :coneSpread="25" :animated="false"
+                :colors="['#c084fc', '#f472b6', '#38bdf8']">
                 <div ref="cardRef"
                     class="card relative overflow-hidden flex justify-between mx-auto w-full h-full p-6 md:p-10"
-                    style="background-color: #02021122; border-radius: 30px; box-shadow: 2.4px 1.9px 3.2px -9px rgba(0, 0, 40, 0.008), 18px 14px 80px -9px rgba(0, 0, 0, 0.09);">
+                    style="background-color: #02021122; border-radius: 30px; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: 2.4px 1.9px 3.2px -9px rgba(0, 0, 40, 0.008), 18px 14px 80px -9px rgba(0, 0, 0, 0.09);">
 
                     <!-- Glowing Background Blob -->
                     <div class="background-glow pointer-events-none absolute rounded-full transition-colors duration-200"
@@ -76,7 +78,7 @@
                     </div>
 
                 </div>
-            </MouseFollowBorder>
+            </BorderGlow>
         </AnimatedContent>
     </Tilted>
 </template>
@@ -85,7 +87,7 @@
 import { useTemplateRef, onMounted, onUnmounted } from 'vue';
 import Tilted from '../ui/Tilted.vue';
 import AnimatedContent from '../ui/AnimatedContent.vue';
-import MouseFollowBorder from '../ui/MouseFollowBorder.vue';
+import BorderGlow from '../ui/BorderGlow.vue';
 
 const cardRef = useTemplateRef<HTMLElement>('cardRef');
 

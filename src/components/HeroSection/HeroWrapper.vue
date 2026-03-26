@@ -5,6 +5,7 @@ import Magentic from '../ui/Magentic.vue';
 import HeroButton from './HeroButton.vue';
 import ScrambleText from '../ui/ScrambleText.vue';
 import AnimatedContent from '../ui/AnimatedContent.vue';
+import MagicRings from '../ui/MagicRings.vue';
 
 const activeTextRef = ref<HTMLDivElement | null>(null);
 const badgeScrambleRef = ref<InstanceType<typeof ScrambleText> | null>(null);
@@ -96,18 +97,18 @@ onUnmounted(() => {
 </script>
 
 <template>
+  <!-- MagicRings background -->
+  <div class="absolute inset-0 z-0 pointer-events-none">
+    <MagicRings color="#2600ff" colorTwo="#ff0000" :ringCount="10" :speed="1" :attenuation="10" :lineThickness="2"
+      :baseRadius="0.35" :radiusStep="0.1" :scaleRate="0.1" :opacity="1" :blur="0" :noiseAmount="0.1" :rotation="0"
+      :ringGap="1" :fadeIn="0.7" :fadeOut="0.5" :mouseInfluence="0.2" :hoverScale="1.2" :parallax="0.05"
+      :followMouse="false" :clickBurst="false" />
+  </div>
   <main class="section1__wrapper relative grow w-full">
     <!-- Left Side Content -->
     <div class="absolute left-0 top-1/2 -translate-y-2/3 z-20 flex flex-col items-start gap-8">
-      <AnimatedContent 
-        direction="horizontal" 
-        :reverse="true" 
-        :distance="150" 
-        :delay="0.2"
-        triggerEvent="replayHeroAnimation"
-        resetEvent="resetHeroAnimation"
-        leaveEvent="leaveHeroAnimation"
-      >
+      <AnimatedContent direction="horizontal" :reverse="true" :distance="150" :delay="0.2"
+        triggerEvent="replayHeroAnimation" resetEvent="resetHeroAnimation" leaveEvent="leaveHeroAnimation">
         <div class="free anime">
           <Magentic :strength="50"
             className="group anime isolate z-20 cursor-default rounded-full text-3xl font-bold relative"
@@ -129,14 +130,8 @@ onUnmounted(() => {
 
     <!-- Right Side Content -->
     <div class="absolute right-0 top-1/2 -translate-y-2/3 z-20 flex flex-col items-end pointer-events-none">
-      <AnimatedContent 
-        direction="horizontal" 
-        :distance="150" 
-        :delay="0.35"
-        triggerEvent="replayHeroAnimation"
-        resetEvent="resetHeroAnimation"
-        leaveEvent="leaveHeroAnimation"
-      >
+      <AnimatedContent direction="horizontal" :distance="150" :delay="0.35" triggerEvent="replayHeroAnimation"
+        resetEvent="resetHeroAnimation" leaveEvent="leaveHeroAnimation">
         <h2
           class="text-7xl font-bold leading-[1.1] md:leading-none text-right flex flex-col justify-center max-w-full pointer-events-auto">
           <div ref="activeTextRef" class="h-full flex flex-col gap-10 justify-around items-end w-full tracking-tighter">
