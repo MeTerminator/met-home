@@ -5,7 +5,8 @@
             :initial-opacity="0" :animate-opacity="true" :scale="1.1" :threshold="0" :delay="0.1"
             @complete="onAnimComplete">
             <MouseFollowBorder>
-                <div ref="cardRef" class="card relative overflow-hidden flex justify-between mx-auto w-full h-full p-6 md:p-10"
+                <div ref="cardRef"
+                    class="card relative overflow-hidden flex justify-between mx-auto w-full h-full p-6 md:p-10"
                     style="background-color: #02021122; border-radius: 30px; box-shadow: 2.4px 1.9px 3.2px -9px rgba(0, 0, 40, 0.008), 18px 14px 80px -9px rgba(0, 0, 0, 0.09);">
 
                     <!-- Glowing Background Blob -->
@@ -15,11 +16,12 @@
 
                     <!-- Profile Frame -->
                     <div class="avatar transition-all duration-500 w-[40%] bg-cover bg-no-repeat ml-0 my-0 object-contain mr-5"
-                        style="background-image: url('/img/met-furry_pendant.png');">
+                        style="background-image: url('/img/met-furry_pendant.webp');">
                     </div>
 
                     <!-- Content Area -->
-                    <div class="infos text-white py-4 w-112.5 max-w-112.5 flex flex-col justify-center gap-4 z-10 relative">
+                    <div
+                        class="infos text-white py-4 w-112.5 max-w-112.5 flex flex-col justify-center gap-4 z-10 relative">
 
                         <div class="info-item">
                             <div class="info-content">

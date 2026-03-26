@@ -18,7 +18,7 @@ const options = {
   navigationPosition: 'left',
   scrollingSpeed: 1300,
   easingcss3: 'cubic-bezier(.70,0,.30,1)',
-  anchors: ['hero', 'about', 'contact'],
+  anchors: ['hero', 'show', 'about'],
   lockAnchors: true,
   credits: { enabled: false },
   afterLoad: (_origin: any, destination: any, _direction: string) => {
@@ -32,13 +32,22 @@ const options = {
         window.dispatchEvent(new Event('replayHeroAnimation'));
       }, 50);
     }
+    if (destination.anchor === 'show') {
+      window.dispatchEvent(new Event('resetShowAnimation'));
+      setTimeout(() => {
+        window.dispatchEvent(new Event('replayShowAnimation'));
+      }, 50);
+    }
   },
   onLeave: (origin: any, destination: any, direction: string) => {
     // Play exit animation for Hero AnimatedContent elements
     if (origin.anchor === 'hero') {
       window.dispatchEvent(new Event('leaveHeroAnimation'));
     }
-
+    // Play exit animation for Show section
+    if (origin.anchor === 'show') {
+      window.dispatchEvent(new Event('leaveShowAnimation'));
+    }
     // Patches border that comes when snapping between dark/light
     if (destination.anchor === 'about') {
       document.body.classList.add('darkGradient');
