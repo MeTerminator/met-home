@@ -22,6 +22,27 @@ const leftImgRef = ref<HTMLElement | null>(null);
 const rightImgRef = ref<HTMLElement | null>(null);
 const cardRef = ref<HTMLElement | null>(null);
 
+const isPortrait = ref(false);
+const isCardOut = ref(false);
+
+const updatePortraitStatus = () => {
+    isPortrait.value = window.innerWidth <= 768;
+    if (!isPortrait.value && isCardOut.value) {
+        isCardOut.value = false;
+        if (cardRef.value) gsap.set(cardRef.value, { x: '0%', opacity: 1 });
+    }
+};
+
+const toggleCardVisibility = () => {
+    if (!isPortrait.value || isAnimating) return;
+    isCardOut.value = !isCardOut.value;
+    if (isCardOut.value) {
+        gsap.to(cardRef.value, { x: '105%', opacity: 0, duration: 0.6, ease: 'power2.inOut' });
+    } else {
+        gsap.to(cardRef.value, { x: '0%', opacity: 1, duration: 0.6, ease: 'power3.out' });
+    }
+};
+
 // ── Section enter / exit (images only — card handled by AnimatedContent) ──
 
 function imgReset() {
@@ -57,12 +78,15 @@ function imgLeave() {
 
 onMounted(() => {
     imgReset();
+    updatePortraitStatus();
+    window.addEventListener('resize', updatePortraitStatus);
     window.addEventListener('replayShowAnimation', imgEnter);
     window.addEventListener('leaveShowAnimation', imgLeave);
     window.addEventListener('resetShowAnimation', imgReset);
 });
 
 onUnmounted(() => {
+    window.removeEventListener('resize', updatePortraitStatus);
     window.removeEventListener('replayShowAnimation', imgEnter);
     window.removeEventListener('leaveShowAnimation', imgLeave);
     window.removeEventListener('resetShowAnimation', imgReset);
@@ -106,7 +130,7 @@ function toggle() {
         <Header color="Dark" />
 
         <!-- ── Main Content Container (Rounded with Margins) ── -->
-        <div class="show-content-container">
+        <div class="show-content-container" @click="toggleCardVisibility">
             <!-- ── Background Images ─────────────────────────────────────── -->
             <div ref="leftImgRef" class="show-bg show-bg--left">
                 <img src="/img/met-main-bg.webp" alt="" draggable="false" />
@@ -123,7 +147,7 @@ function toggle() {
                 :distance="80" triggerEvent="replayShowAnimation" leaveEvent="leaveShowAnimation"
                 resetEvent="resetShowAnimation">
                 <div ref="cardRef">
-                    <Tilted width="340px" height="auto" :rotateAmplitude="10" :scale="true" cardClass="">
+                    <Tilted :width="isPortrait ? '100%' : '340px'" height="auto" :rotateAmplitude="10" :scale="true" cardClass="">
                         <BorderGlow class-name="show-card__inner" background-color="rgba(255,255,255,0.05)"
                             :border-radius="20" glow-color="0 85 65" :glow-intensity="1.1"
                             :colors="['#ef4444', '#2600ff', '#ff9999']" :fill-opacity="0.35" :cone-spread="22">
@@ -157,7 +181,8 @@ function toggle() {
                                     <Magentic :strength="20" :href="links.ocpic" target="_blank"
                                         className="group relative isolate z-20 flex items-center justify-center px-8 py-3 rounded-full border-2 border-red-600 font-extrabold text-sm overflow-hidden cursor-pointer shadow-[0_4px_20px_rgba(0,0,0,0.1)] transition-transform duration-300 active:scale-95"
                                         style="width: 100%;"
-                                        @mouseenter="baseTextRef?.triggerScramble(); hoverTextRef?.triggerScramble()">
+                                        @mouseenter="baseTextRef?.triggerScramble(); hoverTextRef?.triggerScramble()"
+                                        @click.stop>
 
                                         <!-- Background Fill: Left to Right Red -->
                                         <div
@@ -202,6 +227,7 @@ function toggle() {
                                             class="absolute inset-0 bg-gray-100 rounded-full scale-x-0 origin-right transition-transform duration-300 group-hover:scale-x-100 z-0">
                                         </div>
                                     </button>
+                                    <p v-if="isPortrait" class="show-card__hide-hint">Click background to hide card</p>
                                 </div>
                             </div>
                         </BorderGlow>
@@ -383,5 +409,63 @@ function toggle() {
 .show-card__description {
     color: var(--colorDark);
     transition: color 0.4s ease;
+}
+
+@media (max-width: 768px) {
+    .show-content-container {
+        inset: 1rem;
+        margin-top: 5rem;
+        border-radius: 1.5rem;
+    }
+
+    .show-bg {
+        width: 100% !important;
+        mask-image: none !important;
+        -webkit-mask-image: none !important;
+        pointer-events: auto;
+    }
+
+    .show-bg--left {
+        left: 0;
+    }
+
+    .show-bg--right {
+        right: 0;
+    }
+
+    .show-card-wrapper {
+        width: 100% !important;
+        left: 0 !important;
+        right: 0 !important;
+    }
+
+    .show-card__inner {
+        width: calc(100% - 2rem) !important;
+        max-width: 320px;
+        background: rgba(0, 0, 0, 0.7) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3) !important;
+        margin-inline: auto !important;
+    }
+
+    .show-card__label,
+    .show-card__description {
+        color: white !important;
+    }
+
+    .show-card__btn-toggle {
+        color: white !important;
+        border-color: rgba(255, 255, 255, 0.4) !important;
+    }
+
+    .show-card__hide-hint {
+        font-size: 9px;
+        text-align: center;
+        color: white;
+        opacity: 0.3;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        margin-top: 4px;
+    }
 }
 </style>

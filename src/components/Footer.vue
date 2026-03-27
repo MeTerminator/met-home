@@ -29,10 +29,11 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <footer :class="['footer__links mb-2 absolute flex w-full flex-wrap px-paddingX mix-blend-difference', className]">
-    <div class="mx-auto flex w-full max-w-maxWidth gap-0 md:gap-12">
-      <FooterGroup title="LOCAL TIME" class="hidden md:block" :links="[{ href: '#', text: currentTime }]" />
-      <FooterGroup class="hidden md:block" title="OPEN SOURCE" :isMagnetic="true"
+  <footer
+    :class="['footer__links mb-10 md:mb-2 absolute flex w-full flex-wrap px-paddingX mix-blend-difference', className]">
+    <div class="mx-auto flex flex-col md:flex-row w-full max-w-maxWidth gap-6 md:gap-12 items-start md:items-end">
+      <FooterGroup title="LOCAL TIME" :links="[{ href: '#', text: currentTime }]" />
+      <FooterGroup title="OPEN SOURCE" :isMagnetic="true"
         :links="[{ href: links.sourceCode, target: '_blank', text: 'View on GitHub' }]" />
 
       <FooterGroup title="SOCIALS" class="md:ml-auto" :isMagnetic="true" layout="row" :links="[
