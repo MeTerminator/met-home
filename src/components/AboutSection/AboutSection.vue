@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import BgImagesContainer from './BgImagesContainer.vue';
-import Footer from '../Footer.vue';
 import Header from '../Header.vue';
 import Bulge from '../ui/Bulge.vue';
 import AboutCard from './AboutCard.vue';

@@ -59,7 +59,8 @@ onUnmounted(() => {
 
                         <div class="info-item">
                             <div class="info-content">
-                                <h1 id="chac-name" class="font-semibold text-[2.5em] leading-[1.2em] -mt-2">
+                                <h1 id="chac-name"
+                                    class="font-semibold text-[2.5em] leading-[1.2em] -mt-2 text-center cursor-target">
                                     MeTerminator</h1>
                             </div>
                         </div>
@@ -158,6 +159,7 @@ onUnmounted(() => {
         width: 100% !important;
         max-width: 500px !important;
         overflow-y: auto !important;
+        overflow-x: hidden !important;
         align-items: center;
         padding: 2.5rem 1.5rem !important;
         gap: 1rem;

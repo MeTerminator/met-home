@@ -19,7 +19,7 @@ withDefaults(defineProps<{
     <ul :class="['flex gap-4 flex-wrap', layout === 'row' ? 'flex-row' : 'flex-col']">
       <li v-for="(link, index) in links" :key="index">
         <template v-if="isMagnetic">
-          <Magentic :href="link.href" :target="link.target" class="w-fit" hoverUnderline>
+          <Magentic :href="link.href" :target="link.target" class="w-fit cursor-target" hoverUnderline>
             {{ link.text }}
           </Magentic>
         </template>

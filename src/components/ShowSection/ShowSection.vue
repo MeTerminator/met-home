@@ -147,7 +147,8 @@ function toggle() {
                 :distance="80" triggerEvent="replayShowAnimation" leaveEvent="leaveShowAnimation"
                 resetEvent="resetShowAnimation">
                 <div ref="cardRef">
-                    <Tilted :width="isPortrait ? '100%' : '340px'" height="auto" :rotateAmplitude="10" :scale="true" cardClass="">
+                    <Tilted :width="isPortrait ? '100%' : '340px'" height="auto" :rotateAmplitude="10" :scale="true"
+                        cardClass="">
                         <BorderGlow class-name="show-card__inner" background-color="rgba(255,255,255,0.05)"
                             :border-radius="20" glow-color="0 85 65" :glow-intensity="1.1"
                             :colors="['#ef4444', '#2600ff', '#ff9999']" :fill-opacity="0.35" :cone-spread="22">
@@ -342,6 +343,8 @@ function toggle() {
     min-height: 260px;
     width: 320px;
     box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+    /* Prevent horizontal scrollbars */
 }
 
 .show-card__body {

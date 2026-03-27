@@ -43,7 +43,8 @@ const onMenuToggle = () => {
   <header :class="['nav__container anime', className]">
     <nav class="nav__bar">
       <div class="max-w-maxWidth flex justify-between w-full relative">
-        <Magentic href="#" :strength="50" :className="['nav__item text-xl font-bold hover:cursor-pointer'].join(' ')"
+        <Magentic href="#" :strength="50"
+          :className="['nav__item text-xl font-bold hover:cursor-pointer cursor-target'].join(' ')"
           :style="{ color: color === 'Dark' ? 'var(--colorDark)' : 'var(--colorLight)' }"
           @mouseenter="logoAnimationTl?.play()" @mouseleave="logoAnimationTl?.reverse()">
           <p class="mask logo__anim flex items-center justify-center font-semibold">

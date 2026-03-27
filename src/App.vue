@@ -6,6 +6,7 @@ import HeaderNavigation from './components/HeaderNavigation.vue';
 import HeroSection from './components/HeroSection/HeroSection.vue';
 import AboutSection from './components/AboutSection/AboutSection.vue';
 import ShowSection from './components/ShowSection/ShowSection.vue';
+import MusicSection from './components/MusicSection/MusicSection.vue';
 
 gsap.registerPlugin(CustomEase);
 
@@ -22,9 +23,6 @@ const options = {
   lockAnchors: true,
   credits: { enabled: false },
   afterLoad: (_origin: any, destination: any, _direction: string) => {
-    if (destination.anchor === 'about') {
-      window.dispatchEvent(new Event('replayContactAnimation'));
-    }
     if (destination.anchor === 'hero') {
       // Snap back to hidden state first, then play enter animation
       window.dispatchEvent(new Event('resetHeroAnimation'));
@@ -37,6 +35,9 @@ const options = {
       setTimeout(() => {
         window.dispatchEvent(new Event('replayShowAnimation'));
       }, 50);
+    }
+    if (destination.anchor === 'about') {
+      window.dispatchEvent(new Event('replayContactAnimation'));
     }
   },
   onLeave: (origin: any, destination: any, direction: string) => {
@@ -84,6 +85,7 @@ const options = {
     <HeroSection data-anchor="hero" class="hero" />
     <ShowSection data-anchor="show" class="show" />
     <AboutSection data-anchor="about" class="about" />
+    <MusicSection data-anchor="music" class="music" />
   </full-page>
 </template>
 

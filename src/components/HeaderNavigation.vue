@@ -96,7 +96,7 @@ watch(
       <ul class="mask flex flex-col items-center justify-center px-8 py-[10vh]">
         <li v-for="(data, index) in headerData" :key="data.name" class="headerAnimate">
           <Magentic :class="[
-            'text-[clamp(32px,3.3vw+32px,88px)] font-bold drop-shadow-sm',
+            'text-[clamp(32px,3.3vw+32px,88px)] font-bold drop-shadow-sm cursor-target',
           ]" :style="{ color: menuStore.state.color === 'Light' ? 'var(--colorDark)' : 'var(--colorLight)' }"
             :href="data.href" :target="data.target"
             @click="menuStore.toggleMenu({ isMenuOpen: data.target == '_blank' })"

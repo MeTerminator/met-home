@@ -14,23 +14,23 @@ const scrambleChars = '-x_=+<>?/';
 
 const triggerScramble = () => {
   if (interval) clearInterval(interval);
-  
+
   let frame = 0;
   const maxFrames = 12; // Controls duration of the scramble
-  
+
   interval = setInterval(() => {
     frame++;
-    
+
     const progress = frame / maxFrames;
     if (progress >= 1) {
       if (interval) clearInterval(interval);
       displayText.value = props.text;
       return;
     }
-    
+
     let scrambled = '';
     const revealCount = Math.floor(props.text.length * progress);
-    
+
     for (let i = 0; i < props.text.length; i++) {
       if (props.text[i] === ' ') {
         scrambled += ' ';
@@ -42,7 +42,7 @@ const triggerScramble = () => {
         scrambled += scrambleChars[Math.floor(Math.random() * scrambleChars.length)];
       }
     }
-    
+
     displayText.value = scrambled;
   }, 30); // Speed of each frame
 };

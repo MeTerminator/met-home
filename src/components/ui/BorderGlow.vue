@@ -226,59 +226,44 @@ const angleDeg = computed(() => `${cursorAngle.value.toFixed(3)}deg`);
 </script>
 
 <template>
-  <div
-    ref="cardRef"
-    @pointermove="handlePointerMove"
-    @pointerenter="isHovered = true"
-    @pointerleave="isHovered = false"
-    :class="`relative grid isolate border border-white/15 ${props.className}`"
-    :style="{
+  <div ref="cardRef" @pointermove="handlePointerMove" @pointerenter="isHovered = true" @pointerleave="isHovered = false"
+    :class="`relative grid isolate border border-white/15 ${props.className}`" :style="{
       background: 'transparent',
       borderRadius: props.borderRadius + 'px',
       transform: 'translate3d(0, 0, 0.01px)',
-    }"
-  >
+    }">
     <!-- 1. The primary colorful edge glow — strictly hollowed to the border region -->
-    <div
-      class="-z-1 absolute inset-0 rounded-[inherit] pointer-events-none"
-      :style="{
-        padding: props.glowBorderWidth + 'px',
-        background: fillBg.join(', '),
-        
-        // Subtract content from border to get a hollow ring
-        mask: 'linear-gradient(#000, #000) content-box exclude, linear-gradient(#000, #000) border-box',
-        WebkitMask: 'linear-gradient(#000, #000) content-box, linear-gradient(#000, #000) border-box',
-        WebkitMaskComposite: 'xor',
-        
-        opacity: borderOpacity * props.fillOpacity,
-        mixBlendMode: 'screen',
-        transition: isVisible ? 'opacity 0.25s ease-out' : 'opacity 0.75s ease-in-out'
-      }"
-    />
+    <div class="-z-1 absolute inset-0 rounded-[inherit] pointer-events-none" :style="{
+      padding: props.glowBorderWidth + 'px',
+      background: fillBg.join(', '),
+
+      // Subtract content from border to get a hollow ring
+      mask: 'linear-gradient(#000, #000) content-box exclude, linear-gradient(#000, #000) border-box',
+      WebkitMask: 'linear-gradient(#000, #000) content-box, linear-gradient(#000, #000) border-box',
+      WebkitMaskComposite: 'xor',
+
+      opacity: borderOpacity * props.fillOpacity,
+      mixBlendMode: 'screen',
+      transition: isVisible ? 'opacity 0.25s ease-out' : 'opacity 0.75s ease-in-out'
+    }" />
 
     <!-- 3. Outer bloom shadow -->
-    <span
-      class="z-1 absolute rounded-[inherit] pointer-events-none"
-      :style="{
-        inset: `-${props.glowRadius}px`,
-        maskImage: `conic-gradient(from ${angleDeg} at center, black 2.5%, transparent 10%, transparent 90%, black 97.5%)`,
-        WebkitMaskImage: `conic-gradient(from ${angleDeg} at center, black 2.5%, transparent 10%, transparent 90%, black 97.5%)`,
-        opacity: glowOpacity,
-        mixBlendMode: 'plus-lighter',
-        transition: isVisible ? 'opacity 0.25s ease-out' : 'opacity 0.75s ease-in-out'
-      }"
-    >
-      <span
-        class="absolute rounded-[inherit]"
-        :style="{
-          inset: `${props.glowRadius}px`,
-          boxShadow: buildBoxShadow(props.glowColor, props.glowIntensity)
-        }"
-      />
+    <span class="z-1 absolute rounded-[inherit] pointer-events-none" :style="{
+      inset: `-${props.glowRadius}px`,
+      maskImage: `conic-gradient(from ${angleDeg} at center, black 2.5%, transparent 10%, transparent 90%, black 97.5%)`,
+      WebkitMaskImage: `conic-gradient(from ${angleDeg} at center, black 2.5%, transparent 10%, transparent 90%, black 97.5%)`,
+      opacity: glowOpacity,
+      mixBlendMode: 'plus-lighter',
+      transition: isVisible ? 'opacity 0.25s ease-out' : 'opacity 0.75s ease-in-out'
+    }">
+      <span class="absolute rounded-[inherit]" :style="{
+        inset: `${props.glowRadius}px`,
+        boxShadow: buildBoxShadow(props.glowColor, props.glowIntensity)
+      }" />
     </span>
 
     <!-- Content slot -->
-    <div class="z-2 relative flex flex-col overflow-auto h-full w-full">
+    <div class="z-2 relative flex flex-col overflow-hidden h-full w-full">
       <slot />
     </div>
   </div>
