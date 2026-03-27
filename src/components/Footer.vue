@@ -32,9 +32,11 @@ onUnmounted(() => {
   <footer
     :class="['footer__links mb-10 md:mb-2 absolute flex w-full flex-wrap px-paddingX mix-blend-difference', className]">
     <div class="mx-auto flex flex-col md:flex-row w-full max-w-maxWidth gap-6 md:gap-12 items-start md:items-end">
-      <FooterGroup title="LOCAL TIME" :links="[{ href: '#', text: currentTime }]" />
-      <FooterGroup title="OPEN SOURCE" :isMagnetic="true"
-        :links="[{ href: links.sourceCode, target: '_blank', text: 'View on GitHub' }]" />
+      <div class="flex flex-row gap-8 md:gap-12">
+        <FooterGroup title="LOCAL TIME" :links="[{ href: '#', text: currentTime }]" />
+        <FooterGroup title="OPEN SOURCE" :isMagnetic="true"
+          :links="[{ href: links.sourceCode, target: '_blank', text: 'View on GitHub' }]" />
+      </div>
 
       <FooterGroup title="SOCIALS" class="md:ml-auto" :isMagnetic="true" layout="row" :links="[
         { href: links.qq, text: 'QQ' },

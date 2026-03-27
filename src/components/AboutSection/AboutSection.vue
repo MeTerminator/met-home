@@ -22,11 +22,10 @@ const onMouseLeave = () => {
     <Bulge type="Light" />
     <Header color="Light" />
 
-    <div class="relative z-50 flex items-center justify-center w-full max-w-[1200px] mx-auto">
+    <div class="relative z-50 flex items-center justify-center w-full h-full max-w-[1200px] mx-auto">
       <AboutCard class="w-full max-w-[850px] backdrop-blur-md" @mouseenter="onMouseEnter" @mouseleave="onMouseLeave" />
     </div>
 
     <BgImagesContainer :bgImagesSharedRef="bgImagesSharedRef" />
-    <Footer />
   </section>
 </template>
