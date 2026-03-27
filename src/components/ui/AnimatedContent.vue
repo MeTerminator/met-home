@@ -173,6 +173,5 @@ onUnmounted(() => {
 <style scoped>
 .animated-content {
     position: relative;
-    width: 100%;
 }
 </style>

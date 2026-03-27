@@ -9,6 +9,11 @@ import MagicRings from '../ui/MagicRings.vue';
 
 const activeTextRef = ref<HTMLDivElement | null>(null);
 const badgeScrambleRef = ref<InstanceType<typeof ScrambleText> | null>(null);
+const isMobile = ref(false);
+
+const updateSize = () => {
+  isMobile.value = window.innerWidth <= 768;
+};
 
 const slogan1 = ["Stay Hungry", "Stay Foolish"];
 const slogan2 = ["Dream it", "Chase it", "Code it"];
@@ -18,6 +23,9 @@ let loopTimeout: any = null;
 let isTransitioning = false;
 
 onMounted(() => {
+  updateSize();
+  window.addEventListener('resize', updateSize);
+
   if (!activeTextRef.value) return;
   const el = activeTextRef.value;
   let currentIsSlogan1 = true;
@@ -91,6 +99,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
+  window.removeEventListener('resize', updateSize);
   if (scrambleInterval) clearInterval(scrambleInterval);
   if (loopTimeout) clearTimeout(loopTimeout);
 });
@@ -105,36 +114,41 @@ onUnmounted(() => {
       :followMouse="false" :clickBurst="false" />
   </div>
   <main class="section1__wrapper relative grow w-full">
-    <!-- Left Side Content -->
-    <div class="absolute left-0 top-1/2 -translate-y-2/3 z-20 flex flex-col items-start gap-8">
-      <AnimatedContent direction="horizontal" :reverse="true" :distance="150" :delay="0.2"
-        triggerEvent="replayHeroAnimation" resetEvent="resetHeroAnimation" leaveEvent="leaveHeroAnimation">
-        <div class="free anime">
+    <!-- Left Side Content (Badge & Button) -->
+    <div
+      class="absolute left-0 right-0 bottom-24 md:bottom-auto md:left-0 md:right-auto md:top-1/2 md:-translate-y-2/3 z-30 flex flex-col items-center md:items-start gap-6 md:gap-8 px-6">
+      <AnimatedContent :direction="isMobile ? 'vertical' : 'horizontal'" :reverse="true" :distance="80" :delay="0.2"
+        className="flex flex-col items-center md:items-start w-full md:w-fit" triggerEvent="replayHeroAnimation"
+        resetEvent="resetHeroAnimation" leaveEvent="leaveHeroAnimation">
+        <div class="free anime flex flex-col items-center md:items-start gap-6 md:gap-8">
           <Magentic :strength="50"
-            className="group anime isolate z-20 cursor-default rounded-full text-3xl font-bold relative"
+            className="group anime isolate z-20 cursor-default rounded-full text-2xl md:text-3xl font-bold relative"
             @mouseenter="badgeScrambleRef?.triggerScramble()">
             <!-- 3D Background Layer -->
             <div
               class="shapka-bg absolute inset-0 rounded-4xl bg-white/10 backdrop-blur-md border border-white/20 transition-colors duration-300 group-hover:bg-white/20 shadow-[0_4px_30px_rgba(0,0,0,0.1)] -z-10">
             </div>
             <!-- 3D Text Layer -->
-            <div class="shapka flex items-center justify-center px-10 py-6">
+            <div class="shapka flex items-center justify-center px-8 md:px-10 py-4 md:py-6">
               <ScrambleText ref="badgeScrambleRef" text="MeTerminator"
                 className="text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]" />
             </div>
           </Magentic>
+          <HeroButton />
         </div>
-        <HeroButton />
       </AnimatedContent>
     </div>
 
-    <!-- Right Side Content -->
-    <div class="absolute right-0 top-1/2 -translate-y-2/3 z-20 flex flex-col items-end pointer-events-none">
-      <AnimatedContent direction="horizontal" :distance="150" :delay="0.35" triggerEvent="replayHeroAnimation"
+    <!-- Right Side Content (Slogan Text) -->
+    <div
+      class="absolute left-0 right-0 top-24 md:top-1/2 md:left-auto md:right-0 md:-translate-y-2/3 z-20 flex flex-col items-center md:items-end px-6 pointer-events-none">
+      <AnimatedContent :direction="isMobile ? 'vertical' : 'horizontal'" :distance="80" :delay="0.35"
+        className="flex flex-col items-center md:items-end w-full md:w-fit" triggerEvent="replayHeroAnimation"
         resetEvent="resetHeroAnimation" leaveEvent="leaveHeroAnimation">
         <h2
-          class="text-7xl font-bold leading-[1.1] md:leading-none text-right flex flex-col justify-center max-w-full pointer-events-auto">
-          <div ref="activeTextRef" class="h-full flex flex-col gap-10 justify-around items-end w-full tracking-tighter">
+          class="text-3xl sm:text-4xl md:text-7xl font-bold leading-[1.1] md:leading-none text-center md:text-right flex flex-col justify-center max-w-full pointer-events-auto">
+          <div ref="activeTextRef"
+            class="h-full flex flex-row flex-wrap md:flex-col gap-x-4 gap-y-2 md:gap-10 justify-center md:justify-around items-center md:items-end w-full tracking-tighter">
           </div>
         </h2>
       </AnimatedContent>
