@@ -66,7 +66,8 @@ const handleVolumeChange = (e: Event) => {
         <!-- Controls -->
         <div class="flex items-center gap-6">
             <!-- Playback Mode -->
-            <button @click="togglePlaybackMode" class="p-2 text-black/40 hover:text-black transition-colors"
+            <button @click="togglePlaybackMode"
+                class="cursor-target p-2 text-black/40 hover:text-black transition-colors"
                 :title="state.playbackMode === 'sequential' ? 'Sequential' : 'Shuffle'">
                 <svg v-if="state.playbackMode === 'sequential'" class="w-5 h-5" fill="none" stroke="currentColor"
                     viewBox="0 0 24 24">
@@ -80,13 +81,13 @@ const handleVolumeChange = (e: Event) => {
             </button>
 
             <div class="flex items-center gap-4">
-                <button @click="prev" class="p-2 text-black/60 hover:text-black transition-colors">
+                <button @click="prev" class="cursor-target p-2 text-black/60 hover:text-black transition-colors">
                     <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M6 6h2v12H6V6zm3.5 6l8.5 6V6l-8.5 6z" />
                     </svg>
                 </button>
                 <button @click="togglePlay"
-                    class="w-16 h-16 flex items-center justify-center rounded-full bg-black text-white hover:scale-110 active:scale-95 transition-all shadow-xl">
+                    class="cursor-target w-16 h-16 flex items-center justify-center rounded-full bg-black text-white hover:scale-110 active:scale-95 transition-all shadow-xl">
                     <svg v-if="!state.isPlaying" class="w-8 h-8 ml-1" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M8 5v14l11-7z" />
                     </svg>
@@ -94,7 +95,7 @@ const handleVolumeChange = (e: Event) => {
                         <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
                     </svg>
                 </button>
-                <button @click="next" class="p-2 text-black/60 hover:text-black transition-colors">
+                <button @click="next" class="cursor-target p-2 text-black/60 hover:text-black transition-colors">
                     <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
                     </svg>
@@ -102,7 +103,7 @@ const handleVolumeChange = (e: Event) => {
             </div>
 
             <!-- Volume Control -->
-            <div class="flex items-center gap-2 group/volume relative">
+            <div class="cursor-target flex items-center gap-2 group/volume relative">
                 <svg class="w-5 h-5 text-black/40 group-hover/volume:text-black transition-colors" fill="none"
                     stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
