@@ -58,7 +58,6 @@ async function toggle() {
 
     const enteringFurry = !isFurry.value;
     const cardWrapper = cardWrapperRef.value;
-    const cardBody = cardBodyRef.value;
 
     const dMainImg = leftImgRef.value;
     const dFurryImg = rightImgRef.value;
@@ -130,7 +129,8 @@ async function toggle() {
 </script>
 
 <template>
-    <section class="section section__2 second show-section--white relative w-full h-full overflow-hidden"
+    <section
+        class="section music-section relative w-full h-full min-h-screen bg-white overflow-hidden flex flex-col pt-24 pb-12 px-6 lg:px-12"
         :style="{ paddingInline: '0 !important' }">
         <Bulge type="Dark" />
         <Header color="Dark" />
@@ -160,17 +160,21 @@ async function toggle() {
                             <div ref="cardBodyRef" class="show-card__body">
                                 <!-- Mobile Only: Illustration container inside card (Stacked for Performance) -->
                                 <div v-if="isPortrait" class="show-card__mobile-viewport">
-                                    <div class="relative w-full h-full rounded-xl overflow-hidden shadow-lg bg-gray-100">
-                                        <div ref="leftImgMobileRef" class="absolute inset-0 w-full h-full overflow-hidden">
+                                    <div
+                                        class="relative w-full h-full rounded-xl overflow-hidden shadow-lg bg-gray-100">
+                                        <div ref="leftImgMobileRef"
+                                            class="absolute inset-0 w-full h-full overflow-hidden">
                                             <img src="/img/met-main-bg.webp" alt="" class="w-full h-full object-cover">
                                         </div>
-                                        <div ref="rightImgMobileRef" class="absolute inset-0 w-full h-full overflow-hidden">
+                                        <div ref="rightImgMobileRef"
+                                            class="absolute inset-0 w-full h-full overflow-hidden">
                                             <img src="/img/met-furry-bg.webp" alt="" class="w-full h-full object-cover">
                                         </div>
                                     </div>
                                 </div>
 
-                                <p class="show-card__label shrink-0">{{ isFurry ? '— Furry Set -' : '— Main Set -' }}</p>
+                                <p class="show-card__label shrink-0">{{ isFurry ? '— Furry Set -' : '— Main Set -' }}
+                                </p>
 
                                 <div class="show-card__text-content flex-1 overflow-y-auto">
                                     <div v-show="!isFurry" class="show-card__description">
@@ -219,7 +223,7 @@ async function toggle() {
                                     <!-- Toggle Button -->
                                     <button class="show-card__btn-toggle group" @click.stop="toggle">
                                         <span class="relative z-10">{{ isFurry ? 'Switch to Main' : 'Switch to Furry'
-                                            }}</span>
+                                        }}</span>
                                         <svg class="w-4 h-4 relative z-10 transition-transform duration-300"
                                             :class="isFurry ? 'rotate-180' : ''" fill="none" stroke="currentColor"
                                             viewBox="0 0 24 24">

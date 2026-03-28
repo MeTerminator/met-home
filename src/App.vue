@@ -84,9 +84,9 @@ const options = {
 
   <full-page ref="fullpage" :options="options" id="fullpage">
     <HeroSection data-anchor="hero" class="hero" />
-    <MusicSection data-anchor="music" class="music" />
-    <AboutSection data-anchor="about" class="about" />
     <ShowSection data-anchor="show" class="show" />
+    <AboutSection data-anchor="about" class="about" />
+    <MusicSection data-anchor="music" class="music" />
     <ContactSection data-anchor="contact" class="contact" />
   </full-page>
 </template>
