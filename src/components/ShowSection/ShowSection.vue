@@ -36,7 +36,15 @@ const updatePortraitStatus = () => {
 };
 
 const onEntranceComplete = () => {
+    // Entrance pulse or other logic can go here
+};
+
+const onMouseEnter = () => {
     showCardBlur.value = true;
+};
+
+const onMouseLeave = () => {
+    showCardBlur.value = false;
 };
 
 const resetBlur = () => {
@@ -46,7 +54,7 @@ const resetBlur = () => {
 onMounted(() => {
     updatePortraitStatus();
     window.addEventListener('resize', updatePortraitStatus);
-    window.addEventListener('resetShowAnimation', resetBlur);
+    window.addEventListener('section:show:reset', resetBlur);
 
     // Initial state: Show Main Image
     // Desktop
@@ -59,7 +67,7 @@ onMounted(() => {
 
 onUnmounted(() => {
     window.removeEventListener('resize', updatePortraitStatus);
-    window.removeEventListener('resetShowAnimation', resetBlur);
+    window.removeEventListener('section:show:reset', resetBlur);
 });
 
 async function toggle() {
@@ -158,11 +166,11 @@ async function toggle() {
 
             <!-- ── Floating Card ── -->
             <div ref="cardWrapperRef" class="show-card-wrapper" :class="isFurry ? 'is-left' : 'is-right'">
-                <AnimatedContent direction="vertical" :distance="80" triggerEvent="replayShowAnimation"
-                    resetEvent="resetShowAnimation" leaveEvent="leaveShowAnimation" @complete="onEntranceComplete">
+                <AnimatedContent direction="vertical" :distance="80" sectionAnchor="show" @complete="onEntranceComplete">
                     <Tilted :width="isPortrait ? '100%' : '450px'" height="80%" :rotateAmplitude="10" :scale="true"
                         :disabled="isPortrait" cardClass="h-full">
                         <BorderGlow class-name="show-card__inner" :class="{ 'blur-in': showCardBlur }"
+                            @mouseenter="onMouseEnter" @mouseleave="onMouseLeave"
                             :background-color="isPortrait ? 'white' : 'rgba(0,0,0,0.3)'"
                             :border-radius="isPortrait ? 0 : 32" glow-color="255 255 255" :glow-intensity="0.8"
                             :colors="['rgba(255,255,255,0.2)', 'rgba(255,255,255,0.05)', 'rgba(255,255,255,0.2)']"

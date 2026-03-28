@@ -15,7 +15,9 @@ interface AnimatedContentProps {
     delay?: number;
     className?: string;
     alwaysPlay?: boolean;
-    /** Custom event name to trigger (re)play. Useful in fullpage.js environments. */
+    /** If provided, automatically derives trigger/reset/leave events: section:[anchor]:[action] */
+    sectionAnchor?: string;
+    /** Custom event name to trigger (re)play. */
     triggerEvent?: string;
     /** Custom event name to reset back to initial state instantly. */
     resetEvent?: string;
@@ -36,10 +38,16 @@ const props = withDefaults(defineProps<AnimatedContentProps>(), {
     delay: 0,
     className: '',
     alwaysPlay: false,
-    triggerEvent: 'replayContactAnimation',
-    resetEvent: 'resetContactAnimation',
+    sectionAnchor: '',
+    triggerEvent: '',
+    resetEvent: '',
     leaveEvent: '',
 });
+
+// Derived event names
+const getTriggerEvent = () => props.triggerEvent || (props.sectionAnchor ? `section:${props.sectionAnchor}:enter` : '');
+const getResetEvent = () => props.resetEvent || (props.sectionAnchor ? `section:${props.sectionAnchor}:reset` : '');
+const getLeaveEvent = () => props.leaveEvent || (props.sectionAnchor ? `section:${props.sectionAnchor}:exit` : '');
 
 const emit = defineEmits<{
     complete: [];
@@ -126,11 +134,13 @@ onMounted(() => {
         return;
     }
 
-    window.addEventListener(props.triggerEvent, handleTriggerEvent);
-    window.addEventListener(props.resetEvent, handleResetEvent);
-    if (props.leaveEvent) {
-        window.addEventListener(props.leaveEvent, handleLeaveEvent);
-    }
+    const trigger = getTriggerEvent();
+    const reset = getResetEvent();
+    const leave = getLeaveEvent();
+
+    if (trigger) window.addEventListener(trigger, handleTriggerEvent);
+    if (reset) window.addEventListener(reset, handleResetEvent);
+    if (leave) window.addEventListener(leave, handleLeaveEvent);
 });
 
 watch(
@@ -146,6 +156,7 @@ watch(
         props.threshold,
         props.delay,
         props.alwaysPlay,
+        props.sectionAnchor,
         props.triggerEvent
     ],
     () => {
@@ -156,11 +167,14 @@ watch(
 
 onUnmounted(() => {
     if (anim) anim.kill();
-    window.removeEventListener(props.triggerEvent, handleTriggerEvent);
-    window.removeEventListener(props.resetEvent, handleResetEvent);
-    if (props.leaveEvent) {
-        window.removeEventListener(props.leaveEvent, handleLeaveEvent);
-    }
+    
+    const trigger = getTriggerEvent();
+    const reset = getResetEvent();
+    const leave = getLeaveEvent();
+
+    if (trigger) window.removeEventListener(trigger, handleTriggerEvent);
+    if (reset) window.removeEventListener(reset, handleResetEvent);
+    if (leave) window.removeEventListener(leave, handleLeaveEvent);
 });
 </script>
 

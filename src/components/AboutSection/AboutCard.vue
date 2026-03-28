@@ -22,12 +22,12 @@ const handleReset = () => {
 onMounted(() => {
     updateSize();
     window.addEventListener('resize', updateSize);
-    window.addEventListener('resetContactAnimation', handleReset);
+    window.addEventListener('section:about:reset', handleReset);
 });
 
 onUnmounted(() => {
     window.removeEventListener('resize', updateSize);
-    window.removeEventListener('resetContactAnimation', handleReset);
+    window.removeEventListener('section:about:reset', handleReset);
 });
 </script>
 
@@ -36,7 +36,7 @@ onUnmounted(() => {
         card-class="card_tilt w-full max-w-[850px] mx-auto" :scale="!isMobile" :disabled="isMobile">
         <AnimatedContent :distance="50" direction="vertical" :reverse="false" :duration="1.1" ease="power3.out"
             :initial-opacity="0" :animate-opacity="true" :scale="1.1" :threshold="0" :delay="0.1"
-            @complete="onAnimComplete">
+            sectionAnchor="about" @complete="onAnimComplete">
             <BorderGlow :edgeSensitivity="30" glowColor="40 80 80" backgroundColor="#06001000" :borderRadius="28"
                 :glowRadius="40" :glowIntensity="1" :coneSpread="25" :animated="false"
                 :colors="['#c084fc', '#f472b6', '#38bdf8']">

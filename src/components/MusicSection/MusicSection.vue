@@ -5,6 +5,7 @@ import Bulge from '../ui/Bulge.vue';
 import PlayerControls from './PlayerControls.vue';
 import LyricsView from './LyricsView.vue';
 import PlaylistDrawer from './PlaylistDrawer.vue';
+import AnimatedContent from '../ui/AnimatedContent.vue';
 import { musicStore } from '../../store/music';
 
 const { fetchSongs } = musicStore;
@@ -34,19 +35,21 @@ onMounted(() => {
             </h1>
         </div>
 
-        <div
-            class="relative z-10 flex-1 w-full max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-center lg:justify-between gap-12 lg:gap-24">
-            <!-- Left Side: Player Controls -->
-            <div class="w-full lg:w-1/2 flex justify-center lg:justify-end"
-                :class="{ 'hidden lg:flex': isLyricsVisible }">
-                <PlayerControls :is-mobile="isMobile" />
-            </div>
+        <div class="relative z-10 flex-1 w-full max-w-7xl mx-auto flex items-center justify-center">
+            <AnimatedContent direction="vertical" :distance="50" sectionAnchor="music" transition="all 0.8s ease"
+                class="w-full h-full flex flex-col lg:flex-row items-center justify-center lg:justify-between gap-12 lg:gap-24">
+                <!-- Left Side: Player Controls -->
+                <div class="w-full lg:w-1/2 flex justify-center lg:justify-end"
+                    :class="{ 'hidden lg:flex': isLyricsVisible }">
+                    <PlayerControls :is-mobile="isMobile" />
+                </div>
 
-            <!-- Right Side: Lyrics -->
-            <div class="w-full lg:w-1/2 h-full flex items-center text-black"
-                :class="{ 'hidden lg:flex': !isLyricsVisible }">
-                <LyricsView />
-            </div>
+                <!-- Right Side: Lyrics -->
+                <div class="w-full lg:w-1/2 h-full flex items-center text-black"
+                    :class="{ 'hidden lg:flex': !isLyricsVisible }">
+                    <LyricsView />
+                </div>
+            </AnimatedContent>
         </div>
 
         <!-- Mobile View Toggle Button (Aligned with Playlist FAB) -->

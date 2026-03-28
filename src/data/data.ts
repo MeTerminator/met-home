@@ -1,5 +1,6 @@
 export const links = {
   qq: 'https://qm.qq.com/q/CUG7wzOxDE',
+  wechat: 'https://u.wechat.com/MJsrTBCLlJQYaJ7HGM6QtFQ?s=2',
   email: 'mailto:13290003080@163.com',
   github: 'https://github.com/MeTerminator',
   bilibili: 'https://space.bilibili.com/381828152',

@@ -118,8 +118,7 @@ onUnmounted(() => {
     <div
       class="absolute left-0 right-0 bottom-24 md:bottom-auto md:left-0 md:right-auto md:top-1/2 md:-translate-y-2/3 z-30 flex flex-col items-center md:items-start gap-6 md:gap-8 px-6">
       <AnimatedContent :direction="isMobile ? 'vertical' : 'horizontal'" :reverse="true" :distance="80" :delay="0.2"
-        className="flex flex-col items-center md:items-start w-full md:w-fit" triggerEvent="replayHeroAnimation"
-        resetEvent="resetHeroAnimation" leaveEvent="leaveHeroAnimation">
+        className="flex flex-col items-center md:items-start w-full md:w-fit" sectionAnchor="hero">
         <div class="free anime flex flex-col items-center md:items-start gap-6 md:gap-8">
           <Magentic :strength="50"
             className="group anime isolate z-20 cursor-default rounded-full text-2xl md:text-3xl font-bold relative"
@@ -143,8 +142,7 @@ onUnmounted(() => {
     <div
       class="absolute left-0 right-0 top-24 md:top-1/2 md:left-auto md:right-0 md:-translate-y-2/3 z-20 flex flex-col items-center md:items-end px-6 pointer-events-none">
       <AnimatedContent :direction="isMobile ? 'vertical' : 'horizontal'" :distance="80" :delay="0.35"
-        className="flex flex-col items-center md:items-end w-full md:w-fit" triggerEvent="replayHeroAnimation"
-        resetEvent="resetHeroAnimation" leaveEvent="leaveHeroAnimation">
+        className="flex flex-col items-center md:items-end w-full md:w-fit" sectionAnchor="hero">
         <h2
           class="text-3xl sm:text-4xl md:text-7xl font-bold leading-[1.1] md:leading-none text-center md:text-right flex flex-col justify-center max-w-full pointer-events-auto">
           <div ref="activeTextRef"

@@ -65,8 +65,7 @@ onMounted(() => {
 
 <template>
   <div class="wrapperRollingText anime pointer-events-none z-5 select-none rounded-3xl -tracking-widest">
-    <AnimatedContent direction="vertical" :distance="80" :delay="0.5" triggerEvent="replayHeroAnimation"
-      resetEvent="resetHeroAnimation" leaveEvent="leaveHeroAnimation">
+    <AnimatedContent direction="vertical" :distance="80" :delay="0.5" sectionAnchor="hero">
       <div class="rollingText md:text-[100px]!">
         MeTerminator&nbsp;<span class="text-gray-500">//</span>&nbsp;Dreaming<span
           class="text-blue-500">.</span>&nbsp;<span class="text-gray-500">\\</span>&nbsp;Exploring<span

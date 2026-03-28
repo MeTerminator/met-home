@@ -11,6 +11,13 @@ import ContactSection from './components/ContactSection/ContactSection.vue';
 
 gsap.registerPlugin(CustomEase);
 
+const ANCHORS = ['hero', 'show', 'about', 'music', 'contact'];
+
+const dispatchSectionEvent = (anchor: string, action: 'enter' | 'reset' | 'exit') => {
+  window.dispatchEvent(new Event(`section:${anchor}:${action}`));
+};
+
+
 const options = {
   licenseKey: 'gplv3-license',
   autoScrolling: true,
@@ -20,43 +27,30 @@ const options = {
   navigationPosition: 'left',
   scrollingSpeed: 1300,
   easingcss3: 'cubic-bezier(.70,0,.30,1)',
-  anchors: ['hero', 'show', 'about'],
+  anchors: ANCHORS,
   lockAnchors: true,
   credits: { enabled: false },
-  afterLoad: (_origin: any, destination: any, _direction: string) => {
-    if (destination.anchor === 'hero') {
-      // Snap back to hidden state first, then play enter animation
-      window.dispatchEvent(new Event('resetHeroAnimation'));
-      setTimeout(() => {
-        window.dispatchEvent(new Event('replayHeroAnimation'));
-      }, 50);
+  afterLoad: (origin: any, destination: any, _direction: string) => {
+    // 1. Reset the previous section so it's ready for next entry
+    if (origin && origin.anchor) {
+      dispatchSectionEvent(origin.anchor, 'reset');
     }
-    if (destination.anchor === 'show') {
-      window.dispatchEvent(new Event('resetShowAnimation'));
-      setTimeout(() => {
-        window.dispatchEvent(new Event('replayShowAnimation'));
-      }, 50);
-    }
-    if (destination.anchor === 'about') {
-      window.dispatchEvent(new Event('replayContactAnimation'));
-    }
+
+    // 2. Staggered entrance: reset current then enter (safety for first load)
+    dispatchSectionEvent(destination.anchor, 'reset');
+    setTimeout(() => {
+      dispatchSectionEvent(destination.anchor, 'enter');
+    }, 50);
   },
   onLeave: (origin: any, destination: any, direction: string) => {
-    // Play exit animation for Hero AnimatedContent elements
-    if (origin.anchor === 'hero') {
-      window.dispatchEvent(new Event('leaveHeroAnimation'));
-    }
-    // Play exit animation for Show section
-    if (origin.anchor === 'show') {
-      window.dispatchEvent(new Event('leaveShowAnimation'));
-    }
-    // Patches border that comes when snapping between dark/light
-    if (destination.anchor === 'about') {
-      document.body.classList.add('darkGradient');
-      window.dispatchEvent(new Event('resetContactAnimation'));
-    } else {
-      document.body.classList.remove('darkGradient');
-    }
+    // 1. Dispatch standardized exit animation
+    dispatchSectionEvent(origin.anchor, 'exit');
+
+    // 2. Handle Dark/Light theme switching
+    const isDark = ['about', 'contact'].includes(destination.anchor);
+    document.body.classList.toggle('darkGradient', isDark);
+
+    // 3. Trigger geometric ripple and stagger animations
 
     const flex = window.innerWidth > 540 ? 17 : 5;
     const ease = CustomEase.create('custom', 'M0,0 C0.52,0.01 0.16,1 1,1');

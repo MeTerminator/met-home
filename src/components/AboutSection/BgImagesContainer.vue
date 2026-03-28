@@ -79,6 +79,7 @@ onMounted(async () => {
       delay: 0,
       stagger: 0.08,
       duration: 1,
+      paused: true,
       ease: CustomEase.create("custom", "M0,0,C0.5,0,0,1,1,1"),
     }
   );
@@ -99,13 +100,13 @@ onMounted(async () => {
     }
   );
 
-  window.addEventListener('replayContactAnimation', replayAnimation);
-  window.addEventListener('resetContactAnimation', resetAnimation);
+  window.addEventListener('section:about:enter', replayAnimation);
+  window.addEventListener('section:about:reset', resetAnimation);
 });
 
 onUnmounted(() => {
-  window.removeEventListener('replayContactAnimation', replayAnimation);
-  window.removeEventListener('resetContactAnimation', resetAnimation);
+  window.removeEventListener('section:about:enter', replayAnimation);
+  window.removeEventListener('section:about:reset', resetAnimation);
   bgImagesTween.value?.kill();
   if (props.bgImagesSharedRef.current) {
     props.bgImagesSharedRef.current.kill();
