@@ -32,10 +32,10 @@ const updatePortraitStatus = () => {
 onMounted(() => {
     updatePortraitStatus();
     window.addEventListener('resize', updatePortraitStatus);
-    
+
     // Initial state: Show Main Image (leftImg)
-    if (leftImgRef.value) gsap.set(leftImgRef.value, { clipPath: 'inset(0 0 0 0)', opacity: 1 });
-    if (rightImgRef.value) gsap.set(rightImgRef.value, { clipPath: 'inset(0 0 0 100%)', opacity: 0 });
+    if (leftImgRef.value) gsap.set(leftImgRef.value, { clipPath: 'inset(0 0 0 0)', webkitClipPath: 'inset(0 0 0 0)', opacity: 1, zIndex: 2 });
+    if (rightImgRef.value) gsap.set(rightImgRef.value, { clipPath: 'inset(0 0 0 100%)', webkitClipPath: 'inset(0 0 0 100%)', opacity: 0, zIndex: 1 });
 });
 
 onUnmounted(() => {
@@ -66,38 +66,44 @@ async function toggle() {
     if (isPortrait.value) {
         // --- Mobile Logic: Image Wipe + Text Fade ---
         tl.to(cardBody, { opacity: 0, duration: 0.3, ease: 'power2.inOut' });
-        
+
         tl.call(() => { isFurry.value = enteringFurry; }, [], '+=0.1');
 
         if (enteringFurry) {
             // Show Furry: Wipe from Left
-            gsap.set(furryImg, { clipPath: 'inset(0 100% 0 0)', opacity: 1, zIndex: 5 });
-            tl.to(furryImg, { clipPath: 'inset(0 0% 0 0)', duration: 0.8, ease: 'expo.inOut' }, '<');
+            gsap.set(furryImg, { clipPath: 'inset(0 100% 0 0)', webkitClipPath: 'inset(0 100% 0 0)', opacity: 1, zIndex: 5 });
+            tl.to(furryImg, { clipPath: 'inset(0 0% 0 0)', webkitClipPath: 'inset(0 0% 0 0)', duration: 0.8, ease: 'expo.inOut' }, '<');
         } else {
             // Show Main: Wipe from Right
-            gsap.set(mainImg, { clipPath: 'inset(0 0 0 100%)', opacity: 1, zIndex: 5 });
-            tl.to(mainImg, { clipPath: 'inset(0 0% 0 0)', duration: 0.8, ease: 'expo.inOut' }, '<');
+            gsap.set(mainImg, { clipPath: 'inset(0 0 0 100%)', webkitClipPath: 'inset(0 0 0 100%)', opacity: 1, zIndex: 5 });
+            tl.to(mainImg, { clipPath: 'inset(0 0% 0 0)', webkitClipPath: 'inset(0 0% 0 0)', duration: 0.8, ease: 'expo.inOut' }, '<');
         }
 
         tl.to(cardBody, { opacity: 1, duration: 0.4, ease: 'power2.out' });
-        
+
     } else {
         // --- Desktop Logic: Directional Wipe + Card Move ---
         if (enteringFurry) {
-            // Switch to Furry (Left): Wipe from LEFT (revealing from left to right)
-            gsap.set(furryImg, { clipPath: 'inset(0 100% 0 0)', opacity: 1, zIndex: 5 });
+            // Switch to Furry (Left): Reveal from LEFT to RIGHT
+            // Target image (furry) starts hidden at right (inset right 100%)
             gsap.set(mainImg, { zIndex: 1 });
-            tl.to(furryImg, { clipPath: 'inset(0 0 0 0)', duration: 1.2, ease: 'expo.inOut' });
-            tl.to(cardWrapper, { left: '30%', duration: 1.2, ease: 'expo.inOut' }, '<');
+            gsap.fromTo(furryImg,
+                { clipPath: 'inset(0% 100% 0% 0%)', webkitClipPath: 'inset(0% 100% 0% 0%)', opacity: 1, zIndex: 5 },
+                { clipPath: 'inset(0% 0% 0% 0%)', webkitClipPath: 'inset(0% 0% 0% 0%)', duration: 1.2, ease: 'expo.inOut' }
+            );
+            tl.to(cardWrapper, { left: '30%', duration: 1.2, ease: 'expo.inOut' }, 0);
         } else {
-            // Switch to Main (Right): Wipe from RIGHT (revealing from right to left)
-            gsap.set(mainImg, { clipPath: 'inset(0 0 0 100%)', opacity: 1, zIndex: 5 });
+            // Switch to Main (Right): Reveal from RIGHT to LEFT
+            // Target image (main) starts hidden at left (inset left 100%)
             gsap.set(furryImg, { zIndex: 1 });
-            tl.to(mainImg, { clipPath: 'inset(0 0 0 0)', duration: 1.2, ease: 'expo.inOut' });
-            tl.to(cardWrapper, { left: '70%', duration: 1.2, ease: 'expo.inOut' }, '<');
+            gsap.fromTo(mainImg,
+                { clipPath: 'inset(0% 0% 0% 100%)', webkitClipPath: 'inset(0% 0% 0% 100%)', opacity: 1, zIndex: 5 },
+                { clipPath: 'inset(0% 0% 0% 0%)', webkitClipPath: 'inset(0% 0% 0% 0%)', duration: 1.2, ease: 'expo.inOut' }
+            );
+            tl.to(cardWrapper, { left: '70%', duration: 1.2, ease: 'expo.inOut' }, 0);
         }
 
-        tl.call(() => { isFurry.value = enteringFurry; }, [], '<0.6');
+        tl.call(() => { isFurry.value = enteringFurry; }, [], 0.6);
     }
 }
 </script>
@@ -120,25 +126,23 @@ async function toggle() {
             </div>
 
             <!-- ── Floating Card ── -->
-            <div ref="cardWrapperRef" class="show-card-wrapper"
-                :class="isFurry ? 'is-left' : 'is-right'">
+            <div ref="cardWrapperRef" class="show-card-wrapper" :class="isFurry ? 'is-left' : 'is-right'">
                 <AnimatedContent direction="vertical" :distance="80" triggerEvent="replayShowAnimation">
                     <Tilted :width="isPortrait ? '100%' : '450px'" height="80%" :rotateAmplitude="10" :scale="true"
-                        cardClass="h-full">
-                        <BorderGlow class-name="show-card__inner" 
+                        :disabled="isPortrait" cardClass="h-full">
+                        <BorderGlow class-name="show-card__inner"
                             :background-color="isPortrait ? 'white' : 'rgba(0,0,0,0.3)'"
-                            :border-radius="isPortrait ? 0 : 32" 
-                            glow-color="255 255 255" :glow-intensity="0.8"
-                            :colors="['rgba(255,255,255,0.2)', 'rgba(255,255,255,0.05)', 'rgba(255,255,255,0.2)']" 
+                            :border-radius="isPortrait ? 0 : 32" glow-color="255 255 255" :glow-intensity="0.8"
+                            :colors="['rgba(255,255,255,0.2)', 'rgba(255,255,255,0.05)', 'rgba(255,255,255,0.2)']"
                             :fill-opacity="isPortrait ? 0 : 0.15" :cone-spread="20">
-                            
+
                             <div ref="cardBodyRef" class="show-card__body">
                                 <!-- Mobile Only: Illustration container inside card -->
                                 <div v-if="isPortrait" class="show-card__mobile-viewport">
                                     <!-- Use a simple reactive image here to facilitate the text-fade during toggle -->
                                     <div class="relative w-full h-full rounded-xl overflow-hidden shadow-lg">
-                                        <img :src="isFurry ? '/img/met-furry-bg.webp' : '/img/met-main-bg.webp'" 
-                                             alt="" class="w-full h-full object-cover">
+                                        <img :src="isFurry ? '/img/met-furry-bg.webp' : '/img/met-main-bg.webp'" alt=""
+                                            class="w-full h-full object-cover">
                                     </div>
                                 </div>
 
@@ -147,9 +151,11 @@ async function toggle() {
                                 <div class="show-card__text-content">
                                     <div v-show="!isFurry" class="show-card__description">
                                         Hi, my friend. I am <span class="font-bold">MeTerminator</span>, a versatile
-                                        full-stack developer and cybersecurity architect dedicated to crafting sophisticated
+                                        full-stack developer and cybersecurity architect dedicated to crafting
+                                        sophisticated
                                         digital ecosystems. My expertise spans the horizon of modern development, from
-                                        building robust web architectures with <span class="font-bold">Next.js</span> and
+                                        building robust web architectures with <span class="font-bold">Next.js</span>
+                                        and
                                         <span class="font-bold">React</span> to engineering high-performance mobile
                                         experiences through <span class="font-bold">Swift</span> and <span
                                             class="font-bold">Flutter</span>.
@@ -158,11 +164,15 @@ async function toggle() {
                                     <div v-show="isFurry" class="show-card__description">
                                         Beyond the frontend, I specialize in architecting scalable backends using <span
                                             class="font-bold">Python</span>,
-                                        <span class="font-bold">Flask</span>, and <span class="font-bold">FastAPI</span>. I
+                                        <span class="font-bold">Flask</span>, and <span
+                                            class="font-bold">FastAPI</span>. I
                                         immerse myself in the intricate world of <span class="font-bold">CTF
-                                            competitions</span>, focusing on vulnerability research and binary exploitation.
-                                        Whether optimizing <span class="font-bold">Linux infrastructure</span> or hardening
-                                        server-side logic, my work is driven by a singular pursuit: the seamless synthesis
+                                            competitions</span>, focusing on vulnerability research and binary
+                                        exploitation.
+                                        Whether optimizing <span class="font-bold">Linux infrastructure</span> or
+                                        hardening
+                                        server-side logic, my work is driven by a singular pursuit: the seamless
+                                        synthesis
                                         of impenetrable security and elegant, cross-platform functionality.
                                     </div>
                                 </div>
@@ -173,23 +183,34 @@ async function toggle() {
                                         style="width: 100%;"
                                         @mouseenter="baseTextRef?.triggerScramble(); hoverTextRef?.triggerScramble()"
                                         @click.stop>
-                                        <div class="absolute inset-0 bg-red-600 origin-left scale-x-0 transition-transform duration-500 ease-in-out group-hover:scale-x-100 -z-10"></div>
-                                        <div class="flex items-center gap-2 text-red-600 transition-colors duration-500 group-hover:text-white">
-                                            <ScrambleText ref="baseTextRef" text="More OC Pictures" className="whitespace-nowrap" />
-                                            <svg class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M14 5l7 7-7 7" />
+                                        <div
+                                            class="absolute inset-0 bg-red-600 origin-left scale-x-0 transition-transform duration-500 ease-in-out group-hover:scale-x-100 -z-10">
+                                        </div>
+                                        <div
+                                            class="flex items-center gap-2 text-red-600 transition-colors duration-500 group-hover:text-white">
+                                            <ScrambleText ref="baseTextRef" text="More OC Pictures"
+                                                className="whitespace-nowrap" />
+                                            <svg class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
+                                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M5 12h14M14 5l7 7-7 7" />
                                             </svg>
                                         </div>
                                     </Magentic>
 
                                     <!-- Toggle Button -->
                                     <button class="show-card__btn-toggle group" @click.stop="toggle">
-                                        <span class="relative z-10">{{ isFurry ? 'Switch to Main' : 'Switch to Furry' }}</span>
+                                        <span class="relative z-10">{{ isFurry ? 'Switch to Main' : 'Switch to Furry'
+                                            }}</span>
                                         <svg class="w-4 h-4 relative z-10 transition-transform duration-300"
-                                            :class="isFurry ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5M5 12l7-7M5 12l7 7" />
+                                            :class="isFurry ? 'rotate-180' : ''" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 12H5M5 12l7-7M5 12l7 7" />
                                         </svg>
-                                        <div class="absolute inset-0 bg-gray-100 rounded-full scale-x-0 origin-right transition-transform duration-300 group-hover:scale-x-100 z-0"></div>
+                                        <div
+                                            class="absolute inset-0 bg-gray-100 rounded-full scale-x-0 origin-right transition-transform duration-300 group-hover:scale-x-100 z-0">
+                                        </div>
                                     </button>
                                 </div>
                             </div>
@@ -257,7 +278,7 @@ async function toggle() {
     left: 30%;
 }
 
-.show-card-wrapper > div {
+.show-card-wrapper>div {
     pointer-events: auto;
 }
 
@@ -335,7 +356,8 @@ async function toggle() {
     }
 
     .show-bg-viewport {
-        display: none; /* Desktop bg hidden on mobile */
+        display: none;
+        /* Desktop bg hidden on mobile */
     }
 
     .show-card-wrapper {
@@ -344,7 +366,8 @@ async function toggle() {
         left: 0 !important;
         transform: none !important;
         width: 100% !important;
-        padding-top: 5rem; /* Space for Header */
+        padding-top: 5rem;
+        /* Space for Header */
     }
 
     .show-card__inner {

@@ -32,8 +32,8 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <Tilted :width="isMobile ? '95%' : '80%'" height="auto" :rotateAmplitude="isMobile ? 0 : 2"
-        card-class="card_tilt w-full max-w-[850px] mx-auto" :scale="!isMobile">
+    <Tilted :width="isMobile ? '95%' : '80%'" height="auto" :rotateAmplitude="2"
+        card-class="card_tilt w-full max-w-[850px] mx-auto" :scale="!isMobile" :disabled="isMobile">
         <AnimatedContent :distance="50" direction="vertical" :reverse="false" :duration="1.1" ease="power3.out"
             :initial-opacity="0" :animate-opacity="true" :scale="1.1" :threshold="0" :delay="0.1"
             @complete="onAnimComplete">

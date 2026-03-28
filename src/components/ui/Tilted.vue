@@ -14,6 +14,7 @@ const props = defineProps<{
   rotateAmplitude: number;
   cardClass: string;
   scale: boolean;
+  disabled?: boolean;
 }>()
 
 const cardRef = ref<HTMLElement | null>(null);
@@ -24,7 +25,8 @@ const state = reactive({
   scale: 1,
 });
 
-const rotateAmplitude = props.rotateAmplitude;
+// Remove the static assignment to ensure reactivity from props
+// const rotateAmplitude = props.rotateAmplitude;
 
 // Custom throttle implementation with cancel to avoid lodash dependency
 function createThrottle(func: Function, limit: number) {
@@ -59,17 +61,18 @@ const cardStyle = computed(() => ({
 }));
 
 function handleMouse(e: MouseEvent) {
-  if (!cardRef.value) return;
+  if (!cardRef.value || props.disabled) return;
 
   const rect = cardRef.value.getBoundingClientRect();
   const offsetX = e.clientX - rect.left - rect.width / 2;
   const offsetY = e.clientY - rect.top - rect.height / 2;
 
-  state.rotateX = (-offsetY / (rect.height / 2)) * rotateAmplitude;
-  state.rotateY = (offsetX / (rect.width / 2)) * rotateAmplitude;
+  state.rotateX = (-offsetY / (rect.height / 2)) * props.rotateAmplitude;
+  state.rotateY = (offsetX / (rect.width / 2)) * props.rotateAmplitude;
 }
 
 function handleMouseEnter() {
+  if (props.disabled) return;
   state.scale = 1.02;
 }
 

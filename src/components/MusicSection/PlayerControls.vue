@@ -3,6 +3,10 @@ import { computed } from 'vue';
 import { musicStore } from '../../store/music';
 import Tilted from "../ui/Tilted.vue";
 
+defineProps<{
+    isMobile: boolean;
+}>();
+
 const { state, togglePlay, next, prev, seek, setVolume, togglePlaybackMode } = musicStore;
 
 const currentSong = computed(() => state.playlist[state.currentSongIndex]);
@@ -34,7 +38,7 @@ const handleVolumeChange = (e: Event) => {
     <div v-if="currentSong" class="player-controls flex flex-col items-center gap-6 w-full max-w-md">
         <!-- Cover Art -->
         <div class="relative group">
-            <Tilted width="24rem" height="24rem" :rotateAmplitude="15" cardClass="rounded-2xl shadow-2xl" :scale="true">
+            <Tilted width="24rem" height="24rem" :rotateAmplitude="15" cardClass="rounded-2xl shadow-2xl" :scale="true" :disabled="isMobile">
                 <div class="w-full h-full relative z-10">
                     <img :src="currentSong.pic" :alt="currentSong.title" class="w-full h-full object-cover rounded-2xl">
                 </div>

@@ -9,9 +9,16 @@ import { musicStore } from '../../store/music';
 
 const { fetchSongs } = musicStore;
 const isLyricsVisible = ref(false);
+const isMobile = ref(false);
+
+const updateSize = () => {
+    isMobile.value = window.innerWidth <= 1024;
+};
 
 onMounted(() => {
     fetchSongs();
+    updateSize();
+    window.addEventListener('resize', updateSize);
 });
 </script>
 
@@ -21,7 +28,7 @@ onMounted(() => {
         <Bulge type="Dark" />
         <Header color="Dark" />
 
-        <div class="relative z-10 w-full flex flex-col items-center pt-8 md:pt-4">
+        <div class="relative z-10 w-full flex flex-col items-center pt-1">
             <h1 class="text-xs md:text-2xl font-black tracking-[0.4em] text-black/20 uppercase">
                 - Favorite Music -
             </h1>
@@ -32,7 +39,7 @@ onMounted(() => {
             <!-- Left Side: Player Controls -->
             <div class="w-full lg:w-1/2 flex justify-center lg:justify-end"
                 :class="{ 'hidden lg:flex': isLyricsVisible }">
-                <PlayerControls />
+                <PlayerControls :is-mobile="isMobile" />
             </div>
 
             <!-- Right Side: Lyrics -->
