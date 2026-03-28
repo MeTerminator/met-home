@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 import { LyricPlayer } from "@applemusic-like-lyrics/vue";
 import { musicStore } from '../../store/music';
 import "@applemusic-like-lyrics/core/style.css";
 
 const { state, seek: seekStore } = musicStore;
 
-const lyricPlayerRef = ref<any>(null);
+// No unused refs
 
 const lyricPlayerStyles = computed(() => ({
     '--amll-lp-font-size': '2rem',
@@ -37,7 +37,7 @@ const handleLineClick = (line: any) => {
             Loading lyrics...
         </div>
         <div v-else-if="amLyricsData.length > 0" class="w-full h-full">
-            <LyricPlayer ref="lyricPlayerRef" :lyric-lines="amLyricsData" :current-time="state.currentTime"
+            <LyricPlayer :lyric-lines="amLyricsData" :current-time="state.currentTime"
                 :playing="state.isPlaying" :enableSpring="true" :enableScale="true" :alignPosition="0.25"
                 :enableBlur="true" :style="lyricPlayerStyles" class="am-lyric" @line-click="handleLineClick" />
         </div>
