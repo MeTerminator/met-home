@@ -7,6 +7,7 @@ import HeroSection from './components/HeroSection/HeroSection.vue';
 import AboutSection from './components/AboutSection/AboutSection.vue';
 import ShowSection from './components/ShowSection/ShowSection.vue';
 import MusicSection from './components/MusicSection/MusicSection.vue';
+import ContactSection from './components/ContactSection/ContactSection.vue';
 
 gsap.registerPlugin(CustomEase);
 
@@ -86,6 +87,7 @@ const options = {
     <ShowSection data-anchor="show" class="show" />
     <AboutSection data-anchor="about" class="about" />
     <MusicSection data-anchor="music" class="music" />
+    <ContactSection data-anchor="contact" class="contact" />
   </full-page>
 </template>
 

@@ -10,25 +10,25 @@ const handleSelect = (index: number) => {
 </script>
 
 <template>
-    <div class="fixed bottom-8 right-8 z-100 flex flex-col items-end gap-4 pointer-events-none">
+    <div class="absolute bottom-8 right-8 z-100 flex flex-col items-end gap-4 pointer-events-none">
         <!-- Drawer -->
         <Transition name="slide-up">
             <div v-show="state.isPlaylistOpen" 
-                class="w-80 max-h-[70vh] bg-zinc-900 border border-white/10 rounded-2xl shadow-2xl overflow-hidden pointer-events-auto">
-                <div class="p-4 border-b border-white/10 flex justify-between items-center bg-zinc-900/50 backdrop-blur-xl sticky top-0 z-10">
-                    <h3 class="font-bold text-white">Playlist</h3>
-                    <button @click="togglePlaylist" class="text-white/40 hover:text-white transition-colors">
+                class="w-80 max-h-[70vh] bg-white border border-black/5 rounded-2xl shadow-2xl overflow-hidden pointer-events-auto">
+                <div class="p-4 border-b border-black/5 flex justify-between items-center bg-white/50 backdrop-blur-xl sticky top-0 z-10">
+                    <h3 class="font-bold text-black">Playlist</h3>
+                    <button @click="togglePlaylist" class="text-black/40 hover:text-black transition-colors">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </button>
                 </div>
-                <div class="overflow-y-auto max-h-[calc(70vh-4rem)] p-2 space-y-1">
+                <div @wheel.stop @touchmove.stop class="overflow-y-auto max-h-[calc(70vh-4rem)] p-2 space-y-1">
                     <button v-for="(song, index) in state.playlist" :key="song.songmid"
                         @click="handleSelect(index)"
                         :class="[
                             'w-full flex items-center gap-3 p-2 rounded-lg transition-all text-left',
-                            state.currentSongIndex === index ? 'bg-red-600 shadow-lg text-white' : 'text-white/60 hover:bg-white/5 hover:text-white'
+                            state.currentSongIndex === index ? 'bg-red-600 shadow-lg text-white' : 'text-black/60 hover:bg-black/5 hover:text-black'
                         ]">
                         <div class="w-10 h-10 rounded-md overflow-hidden shrink-0">
                             <img :src="song.pic" :alt="song.title" class="w-full h-full object-cover">

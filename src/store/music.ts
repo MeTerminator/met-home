@@ -24,6 +24,7 @@ export const useMusicStore = () => {
         currentTime: 0,
         duration: 0,
         volume: 0.5,
+        playbackMode: 'sequential' as 'sequential' | 'random',
         lyrics: [] as any[],
         isLoadingLyrics: false,
         isPlaylistOpen: false,
@@ -107,14 +108,37 @@ export const useMusicStore = () => {
 
     const next = () => {
         if (state.playlist.length === 0) return;
-        const nextIndex = (state.currentSongIndex + 1) % state.playlist.length;
+        let nextIndex;
+        if (state.playbackMode === 'random' && state.playlist.length > 1) {
+            do {
+                nextIndex = Math.floor(Math.random() * state.playlist.length);
+            } while (nextIndex === state.currentSongIndex);
+        } else {
+            nextIndex = (state.currentSongIndex + 1) % state.playlist.length;
+        }
         playSong(nextIndex);
     };
 
     const prev = () => {
         if (state.playlist.length === 0) return;
-        const prevIndex = (state.currentSongIndex - 1 + state.playlist.length) % state.playlist.length;
+        let prevIndex;
+        if (state.playbackMode === 'random' && state.playlist.length > 1) {
+            do {
+                prevIndex = Math.floor(Math.random() * state.playlist.length);
+            } while (prevIndex === state.currentSongIndex);
+        } else {
+            prevIndex = (state.currentSongIndex - 1 + state.playlist.length) % state.playlist.length;
+        }
         playSong(prevIndex);
+    };
+
+    const setVolume = (v: number) => {
+        state.volume = v;
+        audio.volume = v;
+    };
+
+    const togglePlaybackMode = () => {
+        state.playbackMode = state.playbackMode === 'sequential' ? 'random' : 'sequential';
     };
 
     const seek = (timeMs: number) => {
@@ -130,6 +154,8 @@ export const useMusicStore = () => {
         next,
         prev,
         seek,
+        setVolume,
+        togglePlaybackMode,
         togglePlaylist: () => { state.isPlaylistOpen = !state.isPlaylistOpen; }
     };
 };

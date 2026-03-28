@@ -1,4 +1,3 @@
-
 // import { parseLrc, parseQrc } from "@applemusic-like-lyrics/lyric?init";
 import { parseLrc, parseQrc, parseTTML, waitForWasmReady } from "@/utils/lyric/amll_lyric.js";
 import { siteSettings } from "@/stores";
@@ -10,6 +9,145 @@ import { siteSettings } from "@/stores";
  * @returns {Array} 对应数据
  */
 export const parseLyric = async (data, ttmlLyric = null) => {
+    await waitForWasmReady();
+
+    const settings = siteSettings();
+
+    try {
+        // 以下逻辑保持不变
+
+        // 判断是否具有内容
+        const checkLyric = (lyric) => (lyric ? (lyric ? true : false) : false);
+        // 初始化数据
+        const { lrc, lrctrans, qrc, qrctrans, qrcroma } = data;
+        const lrcData = {
+            lrc: lrc || null,
+            tlyric: lrctrans || null,
+            romalrc: null,
+            yrc: qrc,
+            ytlrc: qrctrans,
+            yromalrc: qrcroma,
+            ttml: ttmlLyric?.content || null,
+        };
+        // 初始化输出结果
+        const result = {
+            // 是否具有普通翻译
+            hasLrcTran: checkLyric(lrctrans),
+            // 是否具有普通音译
+            // hasLrcRoma: checkLyric(romalrc),
+            hasLrcRoma: checkLyric(qrcroma),
+            // 是否具有逐字歌词
+            hasYrc: checkLyric(qrc),
+            // 是否具有逐字翻译
+            hasYrcTran: checkLyric(qrctrans),
+            // 是否具有逐字音译
+            hasYrcRoma: checkLyric(qrcroma),
+            // 是否有 Apple Music 特效歌词
+            hasTtml: checkLyric(lrcData.ttml),
+            // 普通歌词数组
+            lrc: [],
+            // 逐字歌词数据
+            yrc: [],
+            // Apple Music 普通歌词数组
+            lrcAM: [],
+            // Apple Music 逐字歌词数据
+            yrcAM: [],
+            // Apple Music 特效歌词数据
+            ttml: [],
+            ttmlMeta: [],
+
+            lyricResponse: data,
+            ttmlLyricResponse: ttmlLyric,
+        };
+        // 处理后歌词
+        let lrcParseData = [];
+        let tlyricParseData = [];
+        let romalrcParseData = [];
+        let qrcParseData = [];
+        let ytlrcParseData = [];
+        let yromalrcParseData = [];
+        // 普通歌词
+        if (lrcData.lrc) {
+            lrcParseData = parseLrc(lrcData.lrc);
+            result.lrc = parseLrcData(lrcData.lrc);
+            //判断是否有其他翻译
+            if (lrcData.tlyric) {
+                tlyricParseData = parseLrc(lrcData.tlyric);
+                result.lrc = parseOtherLrc(result.lrc, parseLrcData(lrcData.tlyric), "tran");
+            }
+            // result.lrc = lrcData.romalrc
+            //   ? parseOtherLrc(result.lrc, parseLrcData(lrcData.romalrc), "roma")
+            //   : result.lrc;
+            if (lrcData.yromalrc) {
+                // romalrcParseData = parseQrc(lrcData.yromalrc);
+                result.lrc = parseOtherYrc(result.lrc, parseYrcData(lrcData.yromalrc), "roma");
+            }
+        }
+        // 逐字歌词
+        if (lrcData.yrc) {
+            // result.yrc = parseYrcData(lrcData.yrc).slice(1);
+            qrcParseData = parseQrc(lrcData.yrc);
+            result.yrc = parseYrcData(lrcData.yrc);
+            //判断是否有其他翻译
+            if (lrcData.ytlrc) {
+                ytlrcParseData = parseLrc(lrcData.ytlrc);
+                result.yrc = parseOtherLrc(result.yrc, parseLrcData(lrcData.ytlrc), "tran");
+            }
+            if (lrcData.yromalrc) {
+                romalrcParseData = yromalrcParseData = parseQrc(lrcData.yromalrc);
+                result.yrc = parseOtherYrc(result.yrc, parseYrcData(lrcData.yromalrc), "roma");
+            }
+        }
+        // 当仅有 逐字歌词 ，没有 普通歌词 时
+        if (result.yrc.length && !result.lrc.length) {
+            result.lrc = result.yrc.map((v) => {
+                return {
+                    time: v.time,
+                    content: v.content.map((x) => x.content).join(""),
+                };
+            });
+        }
+
+        let lrcAM = parseAMData(lrcParseData, tlyricParseData, romalrcParseData);
+        // 去除 lrcAM 中的空行
+        lrcAM = lrcAM.filter((v) => v.words?.[0]?.word !== "");
+        result.lrcAM = lrcAM;
+
+        if (settings.removeAMInfo) {
+            result.yrcAM = parseAMData(qrcParseData.slice(1), ytlrcParseData.slice(1), yromalrcParseData.slice(1), true);
+        } else {
+            result.yrcAM = parseAMData(qrcParseData, ytlrcParseData, yromalrcParseData, false);
+        }
+
+        if (lrcData.ttml) {
+            const ttmlParsed = parseTTML(lrcData.ttml);
+            result.ttml = ttmlParsed.lines;
+            result.ttmlMeta = ttmlParsed.metadata;
+
+            // 1. 找到 key 为 "ttmlAuthorGithubLogin" 的那一个条目
+            const authorEntry = ttmlParsed.metadata.find(item => item[0] === "ttmlAuthorGithubLogin");
+
+            // 2. 提取该条目的第二个元素（即所有的作者数组）
+            const ttmlAuthors = authorEntry?.[1] || [];
+
+            if (Array.isArray(ttmlAuthors) && ttmlAuthors.length > 0) {
+                // 使用 / 分隔显示所有作者
+                const authorsDisplay = ttmlAuthors.join(' / ');
+                $message.info("TTML 歌词作者：" + authorsDisplay, { showIcon: false });
+            } else if (typeof ttmlAuthors === 'string' && ttmlAuthors !== "") {
+                // 兼容处理：如果解析器有时返回字符串而非数组
+                $message.info("TTML 歌词作者：" + ttmlAuthors, { showIcon: false });
+            } else {
+                $message.info("使用 TTML 歌词", { showIcon: false });
+            }
+        }
+
+        // console.log(result);
+        return result;
+    } catch (error) {
+        console.error("解析歌词时出现错误：", error);
+        return false;
+    }
 };
 
 /**

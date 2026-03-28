@@ -10,7 +10,7 @@ const lyricPlayerRef = ref<any>(null);
 
 const lyricPlayerStyles = computed(() => ({
     '--amll-lp-font-size': '2rem',
-    '--amll-lp-color': 'rgba(255, 255, 255, 0.95)',
+    '--amll-lp-color': 'rgba(0, 0, 0, 0.95)',
     'font-family': 'Inter, system-ui, sans-serif',
     'font-weight': '700',
 }));
@@ -31,9 +31,9 @@ const handleLineClick = (line: any) => {
 </script>
 
 <template>
-    <div class="lyrics-container w-full h-[600px] relative overflow-hidden">
+    <div @wheel.stop @touchmove.stop class="lyrics-container w-full h-[640px] relative overflow-hidden">
         <div v-if="state.isLoadingLyrics"
-            class="absolute inset-0 flex items-center justify-center text-white/20 italic text-xl">
+            class="absolute inset-0 flex items-center justify-center text-black/20 italic text-xl">
             Loading lyrics...
         </div>
         <div v-else-if="amLyricsData.length > 0" class="w-full h-full">
@@ -41,7 +41,7 @@ const handleLineClick = (line: any) => {
                 :playing="state.isPlaying" :enableSpring="true" :enableScale="true" :alignPosition="0.25"
                 :enableBlur="true" :style="lyricPlayerStyles" class="am-lyric" @line-click="handleLineClick" />
         </div>
-        <div v-else class="absolute inset-0 flex items-center justify-center text-white/20 italic text-xl">
+        <div v-else class="absolute inset-0 flex items-center justify-center text-black/20 italic text-xl">
             No lyrics found
         </div>
     </div>

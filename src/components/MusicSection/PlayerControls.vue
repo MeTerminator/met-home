@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { musicStore } from '../../store/music';
+import Tilted from "../ui/Tilted.vue";
 
-const { state, togglePlay, next, prev, seek } = musicStore;
+const { state, togglePlay, next, prev, seek, setVolume, togglePlaybackMode } = musicStore;
 
 const currentSong = computed(() => state.playlist[state.currentSongIndex]);
 
@@ -23,63 +24,98 @@ const handleSeek = (e: Event) => {
     const timeMs = (Number(target.value) / 100) * state.duration;
     seek(timeMs);
 };
+const handleVolumeChange = (e: Event) => {
+    const target = e.target as HTMLInputElement;
+    setVolume(Number(target.value));
+};
 </script>
 
 <template>
     <div v-if="currentSong" class="player-controls flex flex-col items-center gap-6 w-full max-w-md">
         <!-- Cover Art -->
         <div class="relative group">
-            <div class="w-64 h-64 rounded-2xl overflow-hidden shadow-2xl transition-transform duration-500 group-hover:scale-105">
-                <img :src="currentSong.pic" :alt="currentSong.title" class="w-full h-full object-cover">
-            </div>
+            <Tilted width="24rem" height="24rem" :rotateAmplitude="15" cardClass="rounded-2xl shadow-2xl" :scale="true">
+                <div class="w-full h-full relative z-10">
+                    <img :src="currentSong.pic" :alt="currentSong.title" class="w-full h-full object-cover rounded-2xl">
+                </div>
+            </Tilted>
             <!-- Glow Effect -->
-            <div class="absolute inset-0 -z-10 bg-red-500/20 blur-3xl rounded-full scale-110"></div>
+            <div class="absolute inset-0 -z-10 bg-red-500/10 blur-3xl rounded-full scale-110"></div>
         </div>
 
         <!-- Song Info -->
         <div class="text-center">
-            <h2 class="text-3xl font-bold text-white mb-2">{{ currentSong.title }}</h2>
-            <p class="text-white/60 text-lg">{{ currentSong.author }}</p>
+            <h2 class="text-3xl font-bold text-black mb-2">{{ currentSong.title }}</h2>
+            <p class="text-black/60 text-lg">{{ currentSong.author }}</p>
         </div>
 
         <!-- Progress Bar -->
         <div class="w-full space-y-2">
-            <div class="relative w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+            <div class="relative w-full h-1.5 bg-black/10 rounded-full overflow-hidden">
                 <input type="range" :value="progress" @input="handleSeek"
                     class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
                 <div class="absolute top-0 left-0 h-full bg-red-600 transition-all duration-100"
                     :style="{ width: `${progress}%` }"></div>
             </div>
-            <div class="flex justify-between text-xs text-white/40 font-medium">
+            <div class="flex justify-between text-xs text-black/40 font-medium">
                 <span>{{ formatTime(state.currentTime) }}</span>
                 <span>{{ formatTime(state.duration) }}</span>
             </div>
         </div>
 
         <!-- Controls -->
-        <div class="flex items-center gap-8">
-            <button @click="prev" class="p-3 text-white/60 hover:text-white transition-colors">
-                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M6 6h2v12H6V6zm3.5 6l8.5 6V6l-8.5 6z" />
+        <div class="flex items-center gap-6">
+            <!-- Playback Mode -->
+            <button @click="togglePlaybackMode" class="p-2 text-black/40 hover:text-black transition-colors"
+                :title="state.playbackMode === 'sequential' ? 'Sequential' : 'Shuffle'">
+                <svg v-if="state.playbackMode === 'sequential'" class="w-5 h-5" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                 </svg>
             </button>
-            <button @click="togglePlay" 
-                class="w-16 h-16 flex items-center justify-center rounded-full bg-white text-black hover:scale-110 active:scale-95 transition-all shadow-xl">
-                <svg v-if="!state.isPlaying" class="w-8 h-8 ml-1" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M8 5v14l11-7z" />
+
+            <div class="flex items-center gap-4">
+                <button @click="prev" class="p-2 text-black/60 hover:text-black transition-colors">
+                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M6 6h2v12H6V6zm3.5 6l8.5 6V6l-8.5 6z" />
+                    </svg>
+                </button>
+                <button @click="togglePlay"
+                    class="w-16 h-16 flex items-center justify-center rounded-full bg-black text-white hover:scale-110 active:scale-95 transition-all shadow-xl">
+                    <svg v-if="!state.isPlaying" class="w-8 h-8 ml-1" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z" />
+                    </svg>
+                    <svg v-else class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+                    </svg>
+                </button>
+                <button @click="next" class="p-2 text-black/60 hover:text-black transition-colors">
+                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Volume Control -->
+            <div class="flex items-center gap-2 group/volume relative">
+                <svg class="w-5 h-5 text-black/40 group-hover/volume:text-black transition-colors" fill="none"
+                    stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
                 </svg>
-                <svg v-else class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
-                </svg>
-            </button>
-            <button @click="next" class="p-3 text-white/60 hover:text-white transition-colors">
-                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
-                </svg>
-            </button>
+                <div class="w-0 group-hover/volume:w-24 overflow-hidden transition-all duration-300 ease-out">
+                    <input type="range" min="0" max="1" step="0.01" :value="state.volume" @input="handleVolumeChange"
+                        class="w-24 h-1 bg-black/10 rounded-full appearance-none cursor-pointer accent-black">
+                </div>
+            </div>
         </div>
     </div>
-    <div v-else class="flex flex-col items-center justify-center p-12 text-white/20 italic">
+    <div v-else class="flex flex-col items-center justify-center p-12 text-black/20 italic">
         Select a song to start playing
     </div>
 </template>
@@ -89,7 +125,7 @@ input[type="range"]::-webkit-slider-thumb {
     appearance: none;
     width: 12px;
     height: 12px;
-    background: white;
+    background: black;
     border-radius: 50%;
     cursor: pointer;
 }
