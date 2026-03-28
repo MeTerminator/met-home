@@ -228,7 +228,7 @@ const angleDeg = computed(() => `${cursorAngle.value.toFixed(3)}deg`);
 <template>
   <div ref="cardRef" @pointermove="handlePointerMove" @pointerenter="isHovered = true" @pointerleave="isHovered = false"
     :class="`relative grid isolate border border-white/15 ${props.className}`" :style="{
-      background: 'transparent',
+      background: props.backgroundColor || 'transparent',
       borderRadius: props.borderRadius + 'px',
       transform: 'translate3d(0, 0, 0.01px)',
     }">

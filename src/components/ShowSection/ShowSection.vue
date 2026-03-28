@@ -27,17 +27,26 @@ const leftImgMobileRef = ref<HTMLElement | null>(null);
 const rightImgMobileRef = ref<HTMLElement | null>(null);
 
 const cardWrapperRef = ref<HTMLElement | null>(null);
-const cardBodyRef = ref<HTMLElement | null>(null);
 
 const isPortrait = ref(false);
+const showCardBlur = ref(false);
 
 const updatePortraitStatus = () => {
     isPortrait.value = window.innerWidth <= 768;
 };
 
+const onEntranceComplete = () => {
+    showCardBlur.value = true;
+};
+
+const resetBlur = () => {
+    showCardBlur.value = false;
+};
+
 onMounted(() => {
     updatePortraitStatus();
     window.addEventListener('resize', updatePortraitStatus);
+    window.addEventListener('resetShowAnimation', resetBlur);
 
     // Initial state: Show Main Image
     // Desktop
@@ -50,6 +59,7 @@ onMounted(() => {
 
 onUnmounted(() => {
     window.removeEventListener('resize', updatePortraitStatus);
+    window.removeEventListener('resetShowAnimation', resetBlur);
 });
 
 async function toggle() {
@@ -148,10 +158,11 @@ async function toggle() {
 
             <!-- ── Floating Card ── -->
             <div ref="cardWrapperRef" class="show-card-wrapper" :class="isFurry ? 'is-left' : 'is-right'">
-                <AnimatedContent direction="vertical" :distance="80" triggerEvent="replayShowAnimation">
+                <AnimatedContent direction="vertical" :distance="80" triggerEvent="replayShowAnimation"
+                    resetEvent="resetShowAnimation" leaveEvent="leaveShowAnimation" @complete="onEntranceComplete">
                     <Tilted :width="isPortrait ? '100%' : '450px'" height="80%" :rotateAmplitude="10" :scale="true"
                         :disabled="isPortrait" cardClass="h-full">
-                        <BorderGlow class-name="show-card__inner"
+                        <BorderGlow class-name="show-card__inner" :class="{ 'blur-in': showCardBlur }"
                             :background-color="isPortrait ? 'white' : 'rgba(0,0,0,0.3)'"
                             :border-radius="isPortrait ? 0 : 32" glow-color="255 255 255" :glow-intensity="0.8"
                             :colors="['rgba(255,255,255,0.2)', 'rgba(255,255,255,0.05)', 'rgba(255,255,255,0.2)']"
@@ -223,7 +234,7 @@ async function toggle() {
                                     <!-- Toggle Button -->
                                     <button class="show-card__btn-toggle group" @click.stop="toggle">
                                         <span class="relative z-10">{{ isFurry ? 'Switch to Main' : 'Switch to Furry'
-                                        }}</span>
+                                            }}</span>
                                         <svg class="w-4 h-4 relative z-10 transition-transform duration-300"
                                             :class="isFurry ? 'rotate-180' : ''" fill="none" stroke="currentColor"
                                             viewBox="0 0 24 24">
@@ -307,8 +318,9 @@ async function toggle() {
 /* ── Card Styles ── */
 .show-card__inner {
     padding: 3rem 2.5rem 2.5rem;
-    backdrop-filter: blur(32px);
-    -webkit-backdrop-filter: blur(32px);
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+    transition: backdrop-filter 1.2s ease, -webkit-backdrop-filter 1.2s ease, transform 0.3s ease;
     border-radius: 32px;
     display: flex;
     flex-direction: column;
@@ -318,6 +330,11 @@ async function toggle() {
     box-shadow: 0 12px 60px rgba(0, 0, 0, 0.2);
     color: white;
     border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.show-card__inner.blur-in {
+    backdrop-filter: blur(32px);
+    -webkit-backdrop-filter: blur(32px);
 }
 
 .show-card__body {
