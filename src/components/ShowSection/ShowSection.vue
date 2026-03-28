@@ -18,8 +18,14 @@ const hoverTextRef = ref<InstanceType<typeof ScrambleText> | null>(null);
 const isFurry = ref(false);
 let isAnimating = false;
 
+// Desktop refs
 const leftImgRef = ref<HTMLElement | null>(null);
 const rightImgRef = ref<HTMLElement | null>(null);
+
+// Mobile refs (internal to card)
+const leftImgMobileRef = ref<HTMLElement | null>(null);
+const rightImgMobileRef = ref<HTMLElement | null>(null);
+
 const cardWrapperRef = ref<HTMLElement | null>(null);
 const cardBodyRef = ref<HTMLElement | null>(null);
 
@@ -33,9 +39,13 @@ onMounted(() => {
     updatePortraitStatus();
     window.addEventListener('resize', updatePortraitStatus);
 
-    // Initial state: Show Main Image (leftImg)
-    if (leftImgRef.value) gsap.set(leftImgRef.value, { clipPath: 'inset(0 0 0 0)', webkitClipPath: 'inset(0 0 0 0)', opacity: 1, zIndex: 2 });
-    if (rightImgRef.value) gsap.set(rightImgRef.value, { clipPath: 'inset(0 0 0 100%)', webkitClipPath: 'inset(0 0 0 100%)', opacity: 0, zIndex: 1 });
+    // Initial state: Show Main Image
+    // Desktop
+    if (leftImgRef.value) gsap.set(leftImgRef.value, { clipPath: 'inset(0% 0% 0% 0%)', webkitClipPath: 'inset(0% 0% 0% 0%)', opacity: 1, zIndex: 2 });
+    if (rightImgRef.value) gsap.set(rightImgRef.value, { clipPath: 'inset(0% 0% 0% 100%)', webkitClipPath: 'inset(0% 0% 0% 100%)', opacity: 0, zIndex: 1 });
+    // Mobile
+    if (leftImgMobileRef.value) gsap.set(leftImgMobileRef.value, { clipPath: 'inset(0% 0% 0% 0%)', webkitClipPath: 'inset(0% 0% 0% 0%)', opacity: 1, zIndex: 2 });
+    if (rightImgMobileRef.value) gsap.set(rightImgMobileRef.value, { clipPath: 'inset(0% 0% 0% 100%)', webkitClipPath: 'inset(0% 0% 0% 100%)', opacity: 0, zIndex: 1 });
 });
 
 onUnmounted(() => {
@@ -49,13 +59,11 @@ async function toggle() {
     const enteringFurry = !isFurry.value;
     const cardWrapper = cardWrapperRef.value;
     const cardBody = cardBodyRef.value;
-    const mainImg = leftImgRef.value;
-    const furryImg = rightImgRef.value;
 
-    if (!cardWrapper || !mainImg || !furryImg || !cardBody) {
-        isAnimating = false;
-        return;
-    }
+    const dMainImg = leftImgRef.value;
+    const dFurryImg = rightImgRef.value;
+    const mMainImg = leftImgMobileRef.value;
+    const mFurryImg = rightImgMobileRef.value;
 
     const tl = gsap.timeline({
         onComplete: () => {
@@ -64,45 +72,58 @@ async function toggle() {
     });
 
     if (isPortrait.value) {
-        // --- Mobile Logic: Image Wipe + Text Fade ---
-        tl.to(cardBody, { opacity: 0, duration: 0.3, ease: 'power2.inOut' });
+        // --- Mobile Optimized Logic ---
+        // 1. Fade the text content only
+        tl.to('.show-card__text-content, .show-card__label, .show-card__btn-toggle span', {
+            opacity: 0,
+            duration: 0.25,
+            ease: 'sine.inOut'
+        });
 
-        tl.call(() => { isFurry.value = enteringFurry; }, [], '+=0.1');
-
+        // 2. Wipe the mobile illustration simultaneously
         if (enteringFurry) {
-            // Show Furry: Wipe from Left
-            gsap.set(furryImg, { clipPath: 'inset(0 100% 0 0)', webkitClipPath: 'inset(0 100% 0 0)', opacity: 1, zIndex: 5 });
-            tl.to(furryImg, { clipPath: 'inset(0 0% 0 0)', webkitClipPath: 'inset(0 0% 0 0)', duration: 0.8, ease: 'expo.inOut' }, '<');
+            // Reveal Furry from Left
+            gsap.set(mMainImg, { zIndex: 1 });
+            tl.fromTo(mFurryImg,
+                { clipPath: 'inset(0% 100% 0% 0%)', webkitClipPath: 'inset(0% 100% 0% 0%)', opacity: 1, zIndex: 5 },
+                { clipPath: 'inset(0% 0% 0% 0%)', webkitClipPath: 'inset(0% 0% 0% 0%)', duration: 0.8, ease: 'expo.inOut' },
+                0.1 // Start slightly after text fade begins
+            );
         } else {
-            // Show Main: Wipe from Right
-            gsap.set(mainImg, { clipPath: 'inset(0 0 0 100%)', webkitClipPath: 'inset(0 0 0 100%)', opacity: 1, zIndex: 5 });
-            tl.to(mainImg, { clipPath: 'inset(0 0% 0 0)', webkitClipPath: 'inset(0 0% 0 0)', duration: 0.8, ease: 'expo.inOut' }, '<');
+            // Reveal Main from Right
+            gsap.set(mFurryImg, { zIndex: 1 });
+            tl.fromTo(mMainImg,
+                { clipPath: 'inset(0% 0% 0% 100%)', webkitClipPath: 'inset(0% 0% 0% 100%)', opacity: 1, zIndex: 5 },
+                { clipPath: 'inset(0% 0% 0% 0%)', webkitClipPath: 'inset(0% 0% 0% 0%)', duration: 0.8, ease: 'expo.inOut' },
+                0.1
+            );
         }
 
-        tl.to(cardBody, { opacity: 1, duration: 0.4, ease: 'power2.out' });
+        tl.call(() => { isFurry.value = enteringFurry; }, [], 0.4);
+
+        tl.to('.show-card__text-content, .show-card__label, .show-card__btn-toggle span', {
+            opacity: 1,
+            duration: 0.35,
+            ease: 'sine.out'
+        }, '>-0.2');
 
     } else {
-        // --- Desktop Logic: Directional Wipe + Card Move ---
+        // --- Desktop Logic (Remains high performance) ---
         if (enteringFurry) {
-            // Switch to Furry (Left): Reveal from LEFT to RIGHT
-            // Target image (furry) starts hidden at right (inset right 100%)
-            gsap.set(mainImg, { zIndex: 1 });
-            gsap.fromTo(furryImg,
+            gsap.set(dMainImg, { zIndex: 1 });
+            tl.fromTo(dFurryImg,
                 { clipPath: 'inset(0% 100% 0% 0%)', webkitClipPath: 'inset(0% 100% 0% 0%)', opacity: 1, zIndex: 5 },
                 { clipPath: 'inset(0% 0% 0% 0%)', webkitClipPath: 'inset(0% 0% 0% 0%)', duration: 1.2, ease: 'expo.inOut' }
             );
             tl.to(cardWrapper, { left: '30%', duration: 1.2, ease: 'expo.inOut' }, 0);
         } else {
-            // Switch to Main (Right): Reveal from RIGHT to LEFT
-            // Target image (main) starts hidden at left (inset left 100%)
-            gsap.set(furryImg, { zIndex: 1 });
-            gsap.fromTo(mainImg,
+            gsap.set(dFurryImg, { zIndex: 1 });
+            tl.fromTo(dMainImg,
                 { clipPath: 'inset(0% 0% 0% 100%)', webkitClipPath: 'inset(0% 0% 0% 100%)', opacity: 1, zIndex: 5 },
                 { clipPath: 'inset(0% 0% 0% 0%)', webkitClipPath: 'inset(0% 0% 0% 0%)', duration: 1.2, ease: 'expo.inOut' }
             );
             tl.to(cardWrapper, { left: '70%', duration: 1.2, ease: 'expo.inOut' }, 0);
         }
-
         tl.call(() => { isFurry.value = enteringFurry; }, [], 0.6);
     }
 }
@@ -115,8 +136,8 @@ async function toggle() {
         <Header color="Dark" />
 
         <div class="show-content-container">
-            <!-- ── Background Images (Desktop & Mobile Stack) ── -->
-            <div class="show-bg-viewport">
+            <!-- ── Background Images (Desktop Only Viewport) ── -->
+            <div class="show-bg-viewport" v-if="!isPortrait">
                 <div ref="leftImgRef" class="show-bg-panel show-bg--main">
                     <img src="/img/met-main-bg.webp" alt="" draggable="false" />
                 </div>
@@ -137,47 +158,44 @@ async function toggle() {
                             :fill-opacity="isPortrait ? 0 : 0.15" :cone-spread="20">
 
                             <div ref="cardBodyRef" class="show-card__body">
-                                <!-- Mobile Only: Illustration container inside card -->
+                                <!-- Mobile Only: Illustration container inside card (Stacked for Performance) -->
                                 <div v-if="isPortrait" class="show-card__mobile-viewport">
-                                    <!-- Use a simple reactive image here to facilitate the text-fade during toggle -->
-                                    <div class="relative w-full h-full rounded-xl overflow-hidden shadow-lg">
-                                        <img :src="isFurry ? '/img/met-furry-bg.webp' : '/img/met-main-bg.webp'" alt=""
-                                            class="w-full h-full object-cover">
+                                    <div class="relative w-full h-full rounded-xl overflow-hidden shadow-lg bg-gray-100">
+                                        <div ref="leftImgMobileRef" class="absolute inset-0 w-full h-full overflow-hidden">
+                                            <img src="/img/met-main-bg.webp" alt="" class="w-full h-full object-cover">
+                                        </div>
+                                        <div ref="rightImgMobileRef" class="absolute inset-0 w-full h-full overflow-hidden">
+                                            <img src="/img/met-furry-bg.webp" alt="" class="w-full h-full object-cover">
+                                        </div>
                                     </div>
                                 </div>
 
-                                <p class="show-card__label">{{ isFurry ? '— Furry Set -' : '— Main Set -' }}</p>
+                                <p class="show-card__label shrink-0">{{ isFurry ? '— Furry Set -' : '— Main Set -' }}</p>
 
-                                <div class="show-card__text-content">
+                                <div class="show-card__text-content flex-1 overflow-y-auto">
                                     <div v-show="!isFurry" class="show-card__description">
                                         Hi, my friend. I am <span class="font-bold">MeTerminator</span>, a versatile
                                         full-stack developer and cybersecurity architect dedicated to crafting
-                                        sophisticated
-                                        digital ecosystems. My expertise spans the horizon of modern development, from
-                                        building robust web architectures with <span class="font-bold">Next.js</span>
-                                        and
-                                        <span class="font-bold">React</span> to engineering high-performance mobile
-                                        experiences through <span class="font-bold">Swift</span> and <span
-                                            class="font-bold">Flutter</span>.
+                                        sophisticated digital ecosystems. My expertise spans the horizon of modern
+                                        development, from building robust web architectures with <span
+                                            class="font-bold">Next.js</span> and <span class="font-bold">React</span> to
+                                        engineering high-performance mobile experiences through <span
+                                            class="font-bold">Swift</span> and <span class="font-bold">Flutter</span>.
                                     </div>
 
                                     <div v-show="isFurry" class="show-card__description">
                                         Beyond the frontend, I specialize in architecting scalable backends using <span
-                                            class="font-bold">Python</span>,
-                                        <span class="font-bold">Flask</span>, and <span
-                                            class="font-bold">FastAPI</span>. I
-                                        immerse myself in the intricate world of <span class="font-bold">CTF
-                                            competitions</span>, focusing on vulnerability research and binary
-                                        exploitation.
-                                        Whether optimizing <span class="font-bold">Linux infrastructure</span> or
-                                        hardening
-                                        server-side logic, my work is driven by a singular pursuit: the seamless
-                                        synthesis
-                                        of impenetrable security and elegant, cross-platform functionality.
+                                            class="font-bold">Python</span>, <span class="font-bold">Flask</span>, and
+                                        <span class="font-bold">FastAPI</span>. I immerse myself in the intricate world
+                                        of <span class="font-bold">CTF competitions</span>, focusing on vulnerability
+                                        research and binary exploitation. Whether optimizing <span
+                                            class="font-bold">Linux infrastructure</span> or hardening server-side
+                                        logic, my work is driven by a singular pursuit: the seamless synthesis of
+                                        impenetrable security and elegant, cross-platform functionality.
                                     </div>
                                 </div>
 
-                                <div class="mt-auto flex flex-col gap-4">
+                                <div class="mt-auto flex flex-col gap-4 shrink-0">
                                     <Magentic :strength="20" :href="links.ocpic" target="_blank"
                                         className="group relative isolate z-20 flex items-center justify-center px-8 py-3 rounded-full border-2 border-red-600 font-extrabold text-sm overflow-hidden cursor-pointer shadow-[0_4px_20px_rgba(0,0,0,0.1)] transition-transform duration-300 active:scale-95"
                                         style="width: 100%;"
@@ -353,6 +371,12 @@ async function toggle() {
         inset: 0;
         height: 100vh;
         background: white;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: 0;
+        box-shadow: none;
     }
 
     .show-bg-viewport {
@@ -385,6 +409,7 @@ async function toggle() {
         width: 100%;
         margin-bottom: 2rem;
         aspect-ratio: 16 / 9;
+        flex-shrink: 0;
     }
 
     .show-card__label {
