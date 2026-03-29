@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { gsap } from 'gsap';
 import { CustomEase } from 'gsap/CustomEase';
+import GlobalLoading from './components/GlobalLoading.vue';
 import Cursor from './components/Cursor.vue';
 import HeaderNavigation from './components/HeaderNavigation.vue';
 import HeroSection from './components/HeroSection/HeroSection.vue';
@@ -73,6 +74,7 @@ const options = {
 </script>
 
 <template>
+  <GlobalLoading />
   <Cursor />
   <HeaderNavigation />
 
