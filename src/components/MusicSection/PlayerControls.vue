@@ -39,12 +39,30 @@ const handleVolumeChange = (e: Event) => {
         <!-- Cover Art -->
         <div class="relative group">
             <Tilted width="24rem" height="24rem" :rotateAmplitude="15" cardClass="rounded-2xl shadow-2xl" :scale="true" :disabled="isMobile">
-                <div class="w-full h-full relative z-10">
-                    <img :src="currentSong.pic" :alt="currentSong.title" class="w-full h-full object-cover rounded-2xl">
+                <div class="w-full h-full relative z-10 overflow-hidden bg-black/5 rounded-2xl">
+                    <Transition name="cover-fade" mode="out-in">
+                        <img 
+                            :key="currentSong.pic" 
+                            :src="currentSong.pic" 
+                            :alt="currentSong.title" 
+                            class="w-full h-full object-cover rounded-2xl"
+                            loading="lazy"
+                            decoding="async"
+                            @load="(e) => (e.target as HTMLImageElement).classList.add('loaded')"
+                        >
+                    </Transition>
+                    <!-- Loading Placeholder -->
+                    <div class="absolute inset-0 flex items-center justify-center -z-10 bg-linear-to-br from-gray-100 to-gray-200 animate-pulse">
+                        <svg class="w-12 h-12 text-black/5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 14.5c-2.49 0-4.5-2.01-4.5-4.5S9.51 7.5 12 7.5s4.5 2.01 4.5 4.5-2.01 4.5-4.5 4.5zm0-5.5c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1z"/>
+                        </svg>
+                    </div>
                 </div>
             </Tilted>
-            <!-- Glow Effect -->
-            <div class="absolute inset-0 -z-10 bg-red-500/10 blur-3xl rounded-full scale-110"></div>
+            <!-- Dynamic Glow Effect -->
+            <Transition name="glow-fade">
+                <div :key="currentSong.pic" class="absolute inset-0 -z-10 bg-red-500/10 blur-3xl rounded-full scale-110"></div>
+            </Transition>
         </div>
 
         <!-- Song Info -->
@@ -133,5 +151,30 @@ input[type="range"]::-webkit-slider-thumb {
     background: black;
     border-radius: 50%;
     cursor: pointer;
+}
+
+.cover-fade-enter-active,
+.cover-fade-leave-active {
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cover-fade-enter-from {
+    opacity: 0;
+    transform: scale(1.1);
+}
+
+.cover-fade-leave-to {
+    opacity: 0;
+    transform: scale(0.9);
+}
+
+.glow-fade-enter-active,
+.glow-fade-leave-active {
+    transition: opacity 1s ease;
+}
+
+.glow-fade-enter-from,
+.glow-fade-leave-to {
+    opacity: 0;
 }
 </style>

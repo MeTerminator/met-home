@@ -208,6 +208,7 @@ onMounted(() => {
   const resize = () => {
     const w = mount.clientWidth;
     const h = mount.clientHeight;
+    if (w <= 0 || h <= 0) return;
     const dpr = Math.min(window.devicePixelRatio, 2);
 
     renderer!.setSize(w, h);

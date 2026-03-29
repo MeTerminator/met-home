@@ -3,7 +3,7 @@
     <div v-if="showPreview"
       class="absolute right-3 bottom-3 w-[220px] h-[132px] rounded-lg overflow-hidden border border-white/25 shadow-[0_4px_16px_rgba(0,0,0,0.4)] bg-black text-white text-[12px] leading-[1.2] font-sans pointer-events-none">
       <video ref="videoRef" muted playsinline autoplay class="w-full h-full object-cover -scale-x-100" />
-      <div class="absolute left-2 top-2 px-[6px] py-[2px] bg-black/50 rounded-[6px] backdrop-blur-[4px]">
+      <div class="absolute left-2 top-2 px-[6px] py-[2px] bg-black/50 rounded-[6px] backdrop-blur-xs">
         {{
           enableWebcam
             ? modelsReady
@@ -479,7 +479,9 @@ const setupAnimation = () => {
   // Non-reactive Three.js objects - stored as plain variables
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-  renderer.setSize(container.clientWidth, container.clientHeight);
+  if (container.clientWidth > 0 && container.clientHeight > 0) {
+    renderer.setSize(container.clientWidth, container.clientHeight);
+  }
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.NoToneMapping;
   renderer.autoClear = false;
@@ -640,6 +642,7 @@ const setupAnimation = () => {
   };
 
   const onResize = (): void => {
+    if (container.clientWidth <= 0 || container.clientHeight <= 0) return;
     renderer.setSize(container.clientWidth, container.clientHeight);
     uniforms.iResolution.value.set(container.clientWidth, container.clientHeight, renderer.getPixelRatio());
     if (composer) composer.setSize(container.clientWidth, container.clientHeight);

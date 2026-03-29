@@ -163,8 +163,23 @@ export const parseQrcData = (data: any) => {
 };
 
 export const fetchSongs = async () => {
-    const response = await fetch('https://music.met6.top:444/openapi/likemusic.php');
-    return await response.json();
+    try {
+        const response = await fetch('https://music.met6.top:444/openapi/likemusic.php');
+        const data = await response.json();
+        if (!Array.isArray(data)) return [];
+        
+        return data
+            .filter((song: any) => song.url && song.url.trim() !== "")
+            .map((song: any) => ({
+                ...song,
+                pic: (song.pic && song.pic.trim() !== "") 
+                    ? song.pic 
+                    : "https://y.gtimg.cn/mediastyle/global/img/album_300.png"
+            }));
+    } catch (e) {
+        console.error("fetchSongs failed:", e);
+        return [];
+    }
 };
 
 export const fetchLyrics = async (mid: string) => {

@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
+import { } from 'vue';
 import { gsap } from 'gsap';
 import { CustomEase } from 'gsap/CustomEase';
 import Magentic from './ui/Magentic.vue';
 import { menuStore } from '../store/menu';
 
 gsap.registerPlugin(CustomEase);
-const ease = CustomEase.create('custom', 'M0,0 C0.52,0.01 0.16,1 1,1');
 
 const props = withDefaults(defineProps<{
   color: 'Dark' | 'Light';
@@ -14,20 +13,6 @@ const props = withDefaults(defineProps<{
   mode?: 'hamburger' | 'cross';
 }>(), {
   mode: 'hamburger',
-});
-
-const logoAnimationTl = ref<gsap.core.Timeline | null>(null);
-
-onMounted(() => {
-  logoAnimationTl.value = gsap.timeline({ paused: true }).fromTo(
-    '.logo__rotate',
-    { rotate: 0, transformOrigin: 'center' },
-    { rotate: -360, transformOrigin: 'center', duration: 0.6, ease },
-  );
-});
-
-onUnmounted(() => {
-  logoAnimationTl.value?.kill();
 });
 
 const onMenuToggle = () => {
@@ -45,11 +30,10 @@ const onMenuToggle = () => {
       <div class="max-w-maxWidth flex justify-between w-full relative">
         <Magentic href="#" :strength="50"
           :className="['nav__item text-xl font-bold hover:cursor-pointer cursor-target'].join(' ')"
-          :style="{ color: color === 'Dark' ? 'var(--colorDark)' : 'var(--colorLight)' }"
-          @mouseenter="logoAnimationTl?.play()" @mouseleave="logoAnimationTl?.reverse()">
-          <p class="mask logo__anim flex items-center justify-center font-semibold">
+          :style="{ color: color === 'Dark' ? 'var(--colorDark)' : 'var(--colorLight)' }">
+          <div class="mask logo__anim flex items-center justify-center font-semibold gap-2">
             MeT-Home
-          </p>
+          </div>
         </Magentic>
         <Magentic :strength="50" :className="['nav__item h-8 w-8 cursor-pointer items-center'].join(' ')"
           :style="{ color: color === 'Dark' ? 'var(--colorDark)' : 'var(--colorLight)' }" @click="onMenuToggle">

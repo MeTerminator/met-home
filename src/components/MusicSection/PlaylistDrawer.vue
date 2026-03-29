@@ -32,8 +32,8 @@ const handleSelect = (index: number) => {
                             'w-full flex items-center gap-3 p-2 rounded-lg transition-all text-left cursor-target',
                             state.currentSongIndex === index ? 'bg-red-600 shadow-lg text-white' : 'text-black/60 hover:bg-black/5 hover:text-black'
                         ]">
-                        <div class="w-10 h-10 rounded-md overflow-hidden shrink-0">
-                            <img :src="song.pic" :alt="song.title" class="w-full h-full object-cover">
+                        <div class="w-10 h-10 rounded-md overflow-hidden shrink-0 bg-black/5">
+                            <img :src="song.pic" :alt="song.title" class="w-full h-full object-cover" loading="lazy" decoding="async">
                         </div>
                         <div class="flex-1 overflow-hidden">
                             <div class="font-bold truncate text-sm">{{ song.title }}</div>
