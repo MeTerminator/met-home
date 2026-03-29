@@ -35,36 +35,41 @@ export default defineConfig({
     vue(),
     tailwindcss(),
     VitePWA({
-      registerType: 'autoUpdate',
+      registerType: 'prompt',
       injectRegister: 'auto',
-      includeAssets: ['favicon.ico', 'icon/*.svg', 'img/*.png', 'img/*.webp'],
+      includeAssets: ['favicon.ico', 'images/icon/*.png', 'img/*.webp'],
       manifest: {
-        name: 'Home of MeTerminator',
+        name: 'MeT Home - Developer Portfolio',
         short_name: 'MeT-Home',
         description: 'Portfolio of MeTerminator - Developer, Designer, and Tech Enthusiast',
         theme_color: '#000000',
         background_color: '#000000',
         display: 'standalone',
         orientation: 'portrait',
+        categories: ['portfolio', 'development', 'design'],
         icons: [
           {
-            src: '/icon/github.svg',
+            src: '/images/icon/192.png',
             sizes: '192x192',
-            type: 'image/svg+xml',
-            purpose: 'any maskable'
+            type: 'image/png'
           },
           {
-            src: '/icon/github.svg',
+            src: '/images/icon/512.png',
             sizes: '512x512',
-            type: 'image/svg+xml',
-            purpose: 'any maskable'
+            type: 'image/png'
+          },
+          {
+            src: '/images/icon/512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'maskable'
           }
         ]
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2,webp,avif,json}'],
         cleanupOutdatedCaches: true,
-        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5MB limit for caching
+        maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // 10MB limit for caching
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,

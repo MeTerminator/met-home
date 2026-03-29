@@ -314,7 +314,11 @@ const setupAnimation = () => {
   };
 };
 
+const isMobile = ref(false);
+
 onMounted(() => {
+  isMobile.value = window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 768;
+  if (isMobile.value) return;
   setupAnimation();
 });
 
@@ -325,6 +329,7 @@ onBeforeUnmount(() => {
 watch(
   () => [props.targetSelector, props.spinDuration, props.hideDefaultCursor],
   () => {
+    if (isMobile.value) return;
     cleanupAnimation();
     setupAnimation();
   }
@@ -333,7 +338,7 @@ watch(
 watch(
   () => props.spinDuration,
   () => {
-    if (!cursorRef.value || !spinTl.value) return;
+    if (isMobile.value || !cursorRef.value || !spinTl.value) return;
 
     if (spinTl.value.isActive()) {
       spinTl.value.kill();
@@ -349,8 +354,8 @@ watch(
 </script>
 
 <template>
-  <div ref="cursorRef"
-    class="top-0 left-0 z-[9999] fixed w-0 h-0 -translate-x-1/2 -translate-y-1/2 pointer-events-none mix-blend-difference transform opacity-0"
+  <div v-if="!isMobile" ref="cursorRef"
+    class="top-0 left-0 z-9999 fixed w-0 h-0 -translate-x-1/2 -translate-y-1/2 pointer-events-none mix-blend-difference transform opacity-0"
     :style="{ willChange: 'transform' }">
     <div class="top-1/2 left-1/2 absolute bg-white rounded-full w-1 h-1 -translate-x-1/2 -translate-y-1/2 transform"
       :style="{ willChange: 'transform' }" />

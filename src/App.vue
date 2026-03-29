@@ -10,6 +10,7 @@ import AboutSection from './components/AboutSection/AboutSection.vue';
 import ShowSection from './components/ShowSection/ShowSection.vue';
 import MusicSection from './components/MusicSection/MusicSection.vue';
 import ContactSection from './components/ContactSection/ContactSection.vue';
+import ReloadPrompt from './components/ReloadPrompt.vue';
 
 gsap.registerPlugin(CustomEase);
 
@@ -97,6 +98,7 @@ onMounted(() => {
   <GlobalLoading />
   <Cursor />
   <HeaderNavigation />
+  <ReloadPrompt />
 
   <full-page ref="fullpage" :options="options" id="fullpage">
     <HeroSection data-anchor="hero" class="hero" />

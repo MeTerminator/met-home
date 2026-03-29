@@ -175,7 +175,7 @@ async function toggle() {
                                 // Desktop Styles
                                 'md:w-[450px] md:pt-12 md:px-10 md:pb-10 md:gap-6 md:border md:border-white/10 md:shadow-[0_12px_60px_rgba(0,0,0,0.2)] md:text-white',
                                 // Mobile Styles
-                                'max-md:w-full max-md:p-8 max-md:bg-white max-md:text-black max-md:border-none max-md:shadow-none max-md:rounded-none',
+                                'max-md:w-full max-md:pt-0 max-md:pb-8 max-md:px-8 max-md:bg-white max-md:text-black max-md:border-none max-md:shadow-none max-md:rounded-none',
                                 !isPortrait && showCardBlur ? 'backdrop-blur-[32px]' : 'backdrop-blur-none'
                             ]"
                             @mouseenter="onMouseEnter" @mouseleave="onMouseLeave"
@@ -406,7 +406,7 @@ async function toggle() {
         left: 0 !important;
         transform: none !important;
         width: 100% !important;
-        padding-top: 5rem;
+        padding-top: 0;
         /* Space for Header */
     }
 
