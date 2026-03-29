@@ -25,6 +25,7 @@ const options = {
   licenseKey: 'gplv3-license',
   autoScrolling: true,
   scrollOverflow: false,
+  normalScrollElements: '.card, .show-card__text-content',
   scrollHorizontally: false,
   navigation: false,
   navigationPosition: 'left',
