@@ -37,7 +37,13 @@ export default defineConfig({
     VitePWA({
       registerType: 'prompt',
       injectRegister: 'auto',
-      includeAssets: ['favicon.ico', 'images/icon/*.png', 'img/*.webp'],
+      includeAssets: [
+        'favicon.ico',
+        'images/icon/*.png',
+        'img/*.webp',
+        'met-hero-modal/*.avif',
+        '**/*.{png,svg,webp,avif,woff2}'
+      ],
       manifest: {
         name: 'MeT Home - Developer Portfolio',
         short_name: 'MeT-Home',
@@ -67,9 +73,9 @@ export default defineConfig({
         ]
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2,webp,avif,json}'],
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2,ttf,eot,otf,wasm,json,webp,avif}'],
         cleanupOutdatedCaches: true,
-        maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // 10MB limit for caching
+        maximumFileSizeToCacheInBytes: 20 * 1024 * 1024, // Increase limit to 20MB for high-res assets
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
@@ -79,6 +85,34 @@ export default defineConfig({
               expiration: {
                 maxEntries: 10,
                 maxAgeSeconds: 60 * 60 * 24 * 365 // <--- 365 days
+              },
+              cacheableResponse: {
+                statuses: [0, 200]
+              }
+            }
+          },
+          {
+            urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp|avif)$/,
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'images-cache',
+              expiration: {
+                maxEntries: 200,
+                maxAgeSeconds: 60 * 60 * 24 * 30, // 30 Days
+              },
+              cacheableResponse: {
+                statuses: [0, 200]
+              }
+            }
+          },
+          {
+            urlPattern: /\.(?:woff|woff2|ttf|eot|otf)$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'fonts-cache',
+              expiration: {
+                maxEntries: 20,
+                maxAgeSeconds: 60 * 60 * 24 * 365, // 1 Year
               },
               cacheableResponse: {
                 statuses: [0, 200]

@@ -19,6 +19,12 @@ const handleReset = () => {
     cardRef.value?.classList.remove('blur-in');
 };
 
+const moveNext = () => {
+    if ((window as any).fullpage_api) {
+        (window as any).fullpage_api.moveSectionDown();
+    }
+};
+
 onMounted(() => {
     updateSize();
     window.addEventListener('resize', updateSize);
@@ -106,6 +112,17 @@ onUnmounted(() => {
                                     etc.
                                 </p>
                             </div>
+                        </div>
+
+                        <!-- Mobile Next Page -->
+                        <div v-if="isMobile" class="mt-4 w-full">
+                            <button class="w-full py-6 flex items-center justify-center gap-3 text-xs font-bold tracking-[0.2em] uppercase border-t border-white/5 text-white/30 animate-pulse hover:text-white transition-colors"
+                                @click.stop="moveNext">
+                                <span>Scroll to Music</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 13l-7 7-7-7m14-8l-7 7-7-7" />
+                                </svg>
+                            </button>
                         </div>
 
                     </div>

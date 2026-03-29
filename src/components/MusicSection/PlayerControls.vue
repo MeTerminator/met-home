@@ -38,7 +38,7 @@ const handleVolumeChange = (e: Event) => {
     <div v-if="currentSong" class="player-controls flex flex-col items-center gap-6 w-full max-w-md">
         <!-- Cover Art -->
         <div class="relative group">
-            <Tilted width="38vh" height="38vh" :rotateAmplitude="15" cardClass="rounded-2xl shadow-2xl" :scale="true"
+            <Tilted :width="isMobile ? '30vh' : '38vh'" :height="isMobile ? '30vh' : '38vh'" :rotateAmplitude="15" cardClass="rounded-2xl shadow-2xl" :scale="true"
                 :disabled="isMobile">
                 <div class="w-full h-full relative z-10 overflow-hidden bg-black/5 rounded-2xl">
                     <Transition name="cover-fade" mode="out-in">

@@ -8,7 +8,7 @@ import PlaylistDrawer from './PlaylistDrawer.vue';
 import AnimatedContent from '../ui/AnimatedContent.vue';
 import { musicStore } from '../../store/music';
 
-const { fetchSongs } = musicStore;
+const { fetchSongs, togglePlaylist } = musicStore;
 const isLyricsVisible = ref(false);
 const isMobile = ref(false);
 
@@ -39,34 +39,58 @@ onMounted(() => {
             <AnimatedContent direction="vertical" :distance="50" sectionAnchor="music" transition="all 0.8s ease"
                 class="w-full h-full flex flex-col lg:flex-row items-center justify-center lg:justify-between gap-12 lg:gap-24">
                 <!-- Left Side: Player Controls -->
-                <div class="w-full lg:w-1/2 flex justify-center lg:justify-end"
+                <div class="w-full lg:w-1/2 flex flex-col items-center gap-8"
                     :class="{ 'hidden lg:flex': isLyricsVisible }">
                     <PlayerControls :is-mobile="isMobile" />
+                    
+                    <!-- Mobile Control Row (Active Player) -->
+                    <div v-if="isMobile" class="flex items-center gap-4 w-full justify-center px-6">
+                        <button @click="isLyricsVisible = true"
+                            class="flex-1 h-14 bg-black text-white rounded-2xl shadow-xl flex items-center justify-center gap-3 active:scale-95 transition-all text-xs font-bold border border-white/10 uppercase">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                            </svg>
+                            <span>Lyrics</span>
+                        </button>
+                        <button @click="togglePlaylist"
+                            class="flex-1 h-14 bg-red-600 text-white rounded-2xl shadow-xl flex items-center justify-center gap-3 active:scale-95 transition-all text-xs font-bold border border-white/10 uppercase">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                            <span>Playlist</span>
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Right Side: Lyrics -->
-                <div class="w-full lg:w-1/2 h-full flex items-center text-black"
+                <div class="w-full lg:w-1/2 h-full flex flex-col items-center gap-8"
                     :class="{ 'hidden lg:flex': !isLyricsVisible }">
-                    <LyricsView />
+                    <div class="flex-1 w-full flex items-center text-black">
+                        <LyricsView />
+                    </div>
+                    
+                    <!-- Mobile Control Row (Active Lyrics) -->
+                    <div v-if="isMobile" class="flex items-center gap-4 w-full justify-center px-6 pb-8">
+                        <button @click="isLyricsVisible = false"
+                            class="flex-1 h-14 bg-black text-white rounded-2xl shadow-xl flex items-center justify-center gap-3 active:scale-95 transition-all text-xs font-bold border border-white/10 uppercase">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                            </svg>
+                            <span>Player</span>
+                        </button>
+                        <button @click="togglePlaylist"
+                            class="flex-1 h-14 bg-red-600 text-white rounded-2xl shadow-xl flex items-center justify-center gap-3 active:scale-95 transition-all text-xs font-bold border border-white/10 uppercase">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                            <span>Playlist</span>
+                        </button>
+                    </div>
                 </div>
             </AnimatedContent>
         </div>
 
-        <!-- Mobile View Toggle Button (Aligned with Playlist FAB) -->
-        <div class="lg:hidden absolute bottom-8 right-24 z-[110]">
-            <button @click="isLyricsVisible = !isLyricsVisible"
-                class="h-14 px-6 bg-black text-white rounded-full shadow-2xl flex items-center justify-center gap-3 hover:scale-105 active:scale-95 transition-all text-xs font-bold border border-white/10 backdrop-blur-xl uppercase">
-                <svg v-if="!isLyricsVisible" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                        d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
-                </svg>
-                <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                        d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                </svg>
-                <span>{{ isLyricsVisible ? 'PLAYER' : 'LYRICS' }}</span>
-            </button>
-        </div>
+
 
         <!-- Background Elements -->
         <div class="absolute inset-0 z-0 opacity-40">
@@ -75,8 +99,8 @@ onMounted(() => {
             </div>
         </div>
 
-        <!-- Floating Playlist -->
-        <PlaylistDrawer />
+        <!-- Floating Playlist (Handled Inlets In Mobile) -->
+        <PlaylistDrawer :hide-fab="isMobile" />
     </section>
 </template>
 

@@ -31,7 +31,7 @@ const handleLineClick = (line: any) => {
 </script>
 
 <template>
-    <div @wheel.stop @touchmove.stop class="lyrics-container w-full h-[640px] relative overflow-hidden">
+    <div @wheel.stop @touchmove.stop class="lyrics-container w-full h-[75vh] md:h-[640px] relative overflow-hidden">
         <div v-if="state.isLoadingLyrics"
             class="absolute inset-0 flex items-center justify-center text-black/20 italic text-xl">
             Loading lyrics...

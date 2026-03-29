@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { musicStore } from '../../store/music';
 
+const props = defineProps<{
+    hideFab?: boolean;
+}>();
+
 const { state, togglePlaylist, playSong } = musicStore;
 
 const handleSelect = (index: number) => {
@@ -10,7 +14,10 @@ const handleSelect = (index: number) => {
 </script>
 
 <template>
-    <div class="absolute bottom-8 right-8 z-100 flex flex-col items-end gap-4 pointer-events-none">
+    <div :class="[
+        'absolute z-100 flex flex-col gap-4 pointer-events-none transition-all duration-500',
+        hideFab ? 'bottom-20 left-1/2 -translate-x-1/2 items-center' : 'bottom-8 right-8 items-end'
+    ]">
         <!-- Drawer -->
         <Transition name="slide-up">
             <div v-show="state.isPlaylistOpen"
@@ -45,7 +52,7 @@ const handleSelect = (index: number) => {
         </Transition>
 
         <!-- Toggle Button (FAB) -->
-        <button @click="togglePlaylist"
+        <button v-if="!hideFab" @click="togglePlaylist"
             class="cursor-target w-14 h-14 rounded-full bg-red-600 text-white shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all pointer-events-auto hover:bg-red-500">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />

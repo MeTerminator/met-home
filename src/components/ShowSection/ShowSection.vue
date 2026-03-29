@@ -144,6 +144,12 @@ async function toggle() {
         tl.call(() => { isFurry.value = enteringFurry; }, [], 0.6);
     }
 }
+
+const moveNext = () => {
+    if ((window as any).fullpage_api) {
+        (window as any).fullpage_api.moveSectionDown();
+    }
+};
 </script>
 
 <template>
@@ -166,19 +172,18 @@ async function toggle() {
 
             <!-- ── Floating Card ── -->
             <div ref="cardWrapperRef" class="show-card-wrapper" :class="isFurry ? 'is-left' : 'is-right'">
-                <AnimatedContent direction="vertical" :distance="80" sectionAnchor="show" @complete="onEntranceComplete">
+                <AnimatedContent direction="vertical" :distance="80" sectionAnchor="show"
+                    @complete="onEntranceComplete">
                     <Tilted :width="isPortrait ? '100%' : '450px'" height="80%" :rotateAmplitude="10" :scale="true"
                         :disabled="isPortrait" cardClass="h-full">
-                        <BorderGlow 
-                            :class="[
-                                'relative flex flex-col transition-all duration-1000 ease-in-out md:rounded-[32px] overflow-hidden',
-                                // Desktop Styles
-                                'md:w-[450px] md:pt-12 md:px-10 md:pb-10 md:gap-6 md:border md:border-white/10 md:shadow-[0_12px_60px_rgba(0,0,0,0.2)] md:text-white',
-                                // Mobile Styles
-                                'max-md:w-full max-md:pt-0 max-md:pb-8 max-md:px-8 max-md:bg-white max-md:text-black max-md:border-none max-md:shadow-none max-md:rounded-none',
-                                !isPortrait && showCardBlur ? 'backdrop-blur-[32px]' : 'backdrop-blur-none'
-                            ]"
-                            @mouseenter="onMouseEnter" @mouseleave="onMouseLeave"
+                        <BorderGlow :class="[
+                            'relative flex flex-col transition-all duration-1000 ease-in-out md:rounded-[32px] overflow-hidden',
+                            // Desktop Styles
+                            'md:w-[450px] md:pt-12 md:px-10 md:pb-10 md:gap-6 md:border md:border-white/10 md:shadow-[0_12px_60px_rgba(0,0,0,0.2)] md:text-white',
+                            // Mobile Styles
+                            'max-md:w-full max-md:pt-0 max-md:pb-8 max-md:px-8 max-md:bg-white max-md:text-black max-md:border-none max-md:shadow-none max-md:rounded-none',
+                            !isPortrait && showCardBlur ? 'backdrop-blur-[32px]' : 'backdrop-blur-none'
+                        ]" @mouseenter="onMouseEnter" @mouseleave="onMouseLeave"
                             :background-color="isPortrait ? 'white' : 'rgba(0,0,0,0.3)'"
                             :border-radius="isPortrait ? 0 : 32" glow-color="255 255 255" :glow-intensity="0.8"
                             :colors="['rgba(255,255,255,0.2)', 'rgba(255,255,255,0.05)', 'rgba(255,255,255,0.2)']"
@@ -250,7 +255,7 @@ async function toggle() {
                                     <!-- Toggle Button -->
                                     <button class="show-card__btn-toggle group" @click.stop="toggle">
                                         <span class="relative z-10">{{ isFurry ? 'Switch to Main' : 'Switch to Furry'
-                                            }}</span>
+                                        }}</span>
                                         <svg class="w-4 h-4 relative z-10 transition-transform duration-300"
                                             :class="isFurry ? 'rotate-180' : ''" fill="none" stroke="currentColor"
                                             viewBox="0 0 24 24">
@@ -260,6 +265,17 @@ async function toggle() {
                                         <div
                                             class="absolute inset-0 bg-gray-100 rounded-full scale-x-0 origin-right transition-transform duration-300 group-hover:scale-x-100 z-0">
                                         </div>
+                                    </button>
+
+                                    <!-- Mobile Next Page -->
+                                    <button v-if="isPortrait"
+                                        class="mt-4 w-full py-4 flex items-center justify-center gap-2 text-xs font-bold uppercase border-t border-black/5 text-black/40 animate-pulse hover:text-black transition-colors"
+                                        @click.stop="moveNext">
+                                        <span>Scroll to Next Page</span>
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                                d="M19 13l-7 7-7-7m14-8l-7 7-7-7" />
+                                        </svg>
                                     </button>
                                 </div>
                             </div>
