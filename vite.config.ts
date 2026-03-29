@@ -34,15 +34,14 @@ export default defineConfig({
   plugins: [
     vue(),
     tailwindcss(),
-    VitePWA({
+      VitePWA({
       registerType: 'autoUpdate',
       injectRegister: 'auto',
       includeAssets: [
         'favicon.ico',
+        'apple-touch-icon.png',
         'images/icon/*.png',
-        'img/*.webp',
-        'met-hero-modal/*.avif',
-        '**/*.{png,svg,webp,avif,woff2}'
+        'font/*.{woff2,ttf,otf}'
       ],
       manifest: {
         name: 'MeT Home - Developer Portfolio',
@@ -73,29 +72,33 @@ export default defineConfig({
         ]
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2,ttf,eot,otf,wasm,json,webp,avif}'],
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2,ttf,eot,otf,wasm,json}'], // removed webp, avif
         cleanupOutdatedCaches: true,
         skipWaiting: true,
         clientsClaim: true,
-        maximumFileSizeToCacheInBytes: 20 * 1024 * 1024, // Increase limit to 20MB for high-res assets
+        maximumFileSizeToCacheInBytes: 100 * 1024 * 1024, // 100MB
         runtimeCaching: [
           {
-            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+            // Specifically match WebP and AVIF using regex to handle potential MIME type issues
+            urlPattern: /\.(?:webp|avif)(?:\?.*)?$/i,
             handler: 'CacheFirst',
             options: {
-              cacheName: 'google-fonts-cache',
+              cacheName: 'images-cache-optimized',
               expiration: {
-                maxEntries: 10,
-                maxAgeSeconds: 60 * 60 * 24 * 365 // <--- 365 days
+                maxEntries: 300,
+                maxAgeSeconds: 60 * 60 * 24 * 30, // 30 Days
               },
               cacheableResponse: {
                 statuses: [0, 200]
+              },
+              matchOptions: {
+                ignoreVary: true // Crucial for WebP/AVIF due to content negotiation
               }
             }
           },
           {
-            urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp|avif)$/,
-            handler: 'StaleWhileRevalidate',
+            urlPattern: ({ request }) => request.destination === 'image',
+            handler: 'CacheFirst',
             options: {
               cacheName: 'images-cache',
               expiration: {
@@ -108,7 +111,7 @@ export default defineConfig({
             }
           },
           {
-            urlPattern: /\.(?:woff|woff2|ttf|eot|otf)$/,
+            urlPattern: ({ request }) => request.destination === 'font',
             handler: 'CacheFirst',
             options: {
               cacheName: 'fonts-cache',
@@ -122,7 +125,21 @@ export default defineConfig({
             }
           },
           {
-            urlPattern: /\.(?:js|css)$/,
+            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'google-fonts-cache',
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 * 24 * 365 // 365 days
+              },
+              cacheableResponse: {
+                statuses: [0, 200]
+              }
+            }
+          },
+          {
+            urlPattern: ({ request }) => request.destination === 'script' || request.destination === 'style',
             handler: 'StaleWhileRevalidate',
             options: {
               cacheName: 'static-resources',
@@ -136,6 +153,10 @@ export default defineConfig({
             }
           }
         ]
+      },
+      devOptions: {
+        enabled: true,
+        type: 'module'
       }
     }),
     compression(),
