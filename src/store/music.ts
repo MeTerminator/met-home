@@ -60,7 +60,7 @@ export const useMusicStore = () => {
             const data = await fetchRawSongs();
             state.playlist = data;
             if (state.playlist.length > 0 && state.currentSongIndex === -1) {
-                state.currentSongIndex = 0;
+                state.currentSongIndex = Math.floor(Math.random() * state.playlist.length);
             }
         } catch (error) {
             console.error('Failed to fetch songs:', error);

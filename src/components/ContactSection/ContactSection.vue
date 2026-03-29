@@ -37,7 +37,7 @@ const hoverStates = ref<Record<string, boolean>>({});
 
             <!-- Content Grid: Cards + Links -->
             <div class="w-full flex flex-col lg:flex-row items-center justify-center gap-12 lg:gap-32 px-4 lg:px-8">
-                
+
                 <!-- Left Side: QR Contact Cards (Hidden on Mobile) -->
                 <div class="hidden lg:flex w-full lg:w-7/10 flex-col sm:flex-row items-center justify-center gap-12">
                     <!-- WeChat Card -->
@@ -46,8 +46,8 @@ const hoverStates = ref<Record<string, boolean>>({});
                         <Tilted width="100%" height="100%" :rotateAmplitude="5" :scale="true"
                             card-class="w-full h-full">
                             <BorderGlow className="p-8 text-center h-full flex flex-col justify-center"
-                                glowColor="34 197 94" backgroundColor="rgba(255, 255, 255, 0.03)" :borderRadius="32"
-                                :fillOpacity="0.1" :glowIntensity="0.6" :colors="['#22c55e', '#16a34a', '#4ade80']">
+                                glowColor="7 193 96" backgroundColor="rgba(255, 255, 255, 0.03)" :borderRadius="32"
+                                :fillOpacity="0.1" :glowIntensity="0.6" :colors="['#07c160', '#06ad56', '#059348']">
                                 <div class="flex flex-col items-center gap-4">
                                     <div
                                         class="relative w-full aspect-square p-4 bg-white/5 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-md border border-white/10 flex items-center justify-center">
