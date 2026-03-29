@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { gsap } from 'gsap';
 import { CustomEase } from 'gsap/CustomEase';
+import { onMounted } from 'vue';
 import GlobalLoading from './components/GlobalLoading.vue';
 import Cursor from './components/Cursor.vue';
 import HeaderNavigation from './components/HeaderNavigation.vue';
@@ -71,6 +72,25 @@ const options = {
     }
   }
 };
+
+onMounted(() => {
+  // 控制台输出
+  const styleTitle1 = "font-size: 20px;font-weight: 600;color: rgb(244,167,89);";
+  const styleTitle2 = "font-size:12px;color: rgb(244,167,89);";
+  const styleContent = "color: rgb(30,152,255);";
+  const title1 = "Home of MeTerminator";
+  const title2 = `
+  __  __   _______                  _             _             
+ |  \\/  | |__   __|                (_)           | |            
+ | \\  / | ___| | ___ _ __ _ __ ___  _ _ __   __ _| |_ ___  _ __ 
+ | |\\/| |/ _ \\ |/ _ \\ '__| '_ \` _ \\| | \'_ \\ / _\` | __/ _ \\| '__|
+ | |  | |  __/ |  __/ |  | | | | | | | | | | (_| | || (_) | |   
+ |_|  |_|\___|_|\___|_|  |_| |_| |_|_|_| |_|\__,_|\__\___/|_|   
+
+`;
+  const content = `\n\n主页: https://www.met6.top:444/\nGitHub: https://github.com/MeTerminator\nQQ号: 3532095196\nEmail: 13290003080@163.com\n`;
+  console.info(`%c${title1} %c${title2} %c${content}`, styleTitle1, styleTitle2, styleContent);
+});
 </script>
 
 <template>

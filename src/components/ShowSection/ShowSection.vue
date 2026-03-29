@@ -169,7 +169,15 @@ async function toggle() {
                 <AnimatedContent direction="vertical" :distance="80" sectionAnchor="show" @complete="onEntranceComplete">
                     <Tilted :width="isPortrait ? '100%' : '450px'" height="80%" :rotateAmplitude="10" :scale="true"
                         :disabled="isPortrait" cardClass="h-full">
-                        <BorderGlow class-name="show-card__inner" :class="{ 'blur-in': showCardBlur }"
+                        <BorderGlow 
+                            :class="[
+                                'relative flex flex-col transition-all duration-1000 ease-in-out md:rounded-[32px] overflow-hidden',
+                                // Desktop Styles
+                                'md:w-[450px] md:pt-12 md:px-10 md:pb-10 md:gap-6 md:border md:border-white/10 md:shadow-[0_12px_60px_rgba(0,0,0,0.2)] md:text-white',
+                                // Mobile Styles
+                                'max-md:w-full max-md:p-8 max-md:bg-white max-md:text-black max-md:border-none max-md:shadow-none max-md:rounded-none',
+                                !isPortrait && showCardBlur ? 'backdrop-blur-[32px]' : 'backdrop-blur-none'
+                            ]"
                             @mouseenter="onMouseEnter" @mouseleave="onMouseLeave"
                             :background-color="isPortrait ? 'white' : 'rgba(0,0,0,0.3)'"
                             :border-radius="isPortrait ? 0 : 32" glow-color="255 255 255" :glow-intensity="0.8"
@@ -324,27 +332,6 @@ async function toggle() {
 }
 
 /* ── Card Styles ── */
-.show-card__inner {
-    padding: 3rem 2.5rem 2.5rem;
-    backdrop-filter: blur(0px);
-    -webkit-backdrop-filter: blur(0px);
-    transition: backdrop-filter 1.2s ease, -webkit-backdrop-filter 1.2s ease, transform 0.3s ease;
-    border-radius: 32px;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    height: 100%;
-    width: 450px;
-    box-shadow: 0 12px 60px rgba(0, 0, 0, 0.2);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.show-card__inner.blur-in {
-    backdrop-filter: blur(32px);
-    -webkit-backdrop-filter: blur(32px);
-}
-
 .show-card__body {
     display: flex;
     flex-direction: column;
@@ -421,17 +408,6 @@ async function toggle() {
         width: 100% !important;
         padding-top: 5rem;
         /* Space for Header */
-    }
-
-    .show-card__inner {
-        width: 100% !important;
-        background: white !important;
-        color: black !important;
-        border: none !important;
-        box-shadow: none !important;
-        padding: 2rem 1.5rem !important;
-        backdrop-filter: none !important;
-        border-radius: 0 !important;
     }
 
     .show-card__mobile-viewport {
