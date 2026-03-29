@@ -37,7 +37,7 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       injectRegister: 'auto',
-      includeAssets: ['favicon.ico', 'icon/*.svg', 'img/*.png'],
+      includeAssets: ['favicon.ico', 'icon/*.svg', 'img/*.png', 'img/*.webp'],
       manifest: {
         name: 'Home of MeTerminator',
         short_name: 'MeT-Home',
@@ -62,7 +62,9 @@ export default defineConfig({
         ]
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2,webp,avif,json}'],
+        cleanupOutdatedCaches: true,
+        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5MB limit for caching
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
