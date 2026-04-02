@@ -41,19 +41,9 @@
 
 ## 📸 Visual Preview
 
-````carousel
-![Preview 1](.github/images/img2.webp)
-<!-- slide -->
-![Preview 2](.github/images/img3.webp)
-<!-- slide -->
-![Preview 3](.github/images/img4.webp)
-<!-- slide -->
-![Preview 4](.github/images/img5.webp)
-<!-- slide -->
-![Preview 5](.github/images/img6.webp)
-<!-- slide -->
-![Preview 6](.github/images/img7.webp)
-````
+| ![Preview 1](.github/images/img1.webp) | ![Preview 2](.github/images/img3.webp) | ![Preview 3](.github/images/img4.webp) |
+| :---: | :---: | :---: |
+| ![Preview 4](.github/images/img5.webp) | ![Preview 5](.github/images/img6.webp) | ![Preview 6](.github/images/img7.webp) |
 
 ---
 
