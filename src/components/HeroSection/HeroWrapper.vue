@@ -9,7 +9,7 @@ import MagicRings from '../ui/MagicRings.vue';
 
 const activeTextRef = ref<HTMLDivElement | null>(null);
 const badgeScrambleRef = ref<InstanceType<typeof ScrambleText> | null>(null);
-const isMobile = ref(false);
+const isMobile = ref(typeof window !== 'undefined' && window.innerWidth <= 768);
 
 const updateSize = () => {
   isMobile.value = window.innerWidth <= 768;
@@ -116,7 +116,7 @@ onUnmounted(() => {
   <main class="section1__wrapper relative grow w-full">
     <!-- Left Side Content (Badge & Button) -->
     <div
-      class="absolute left-0 right-0 bottom-24 md:bottom-auto md:left-0 md:right-auto md:top-1/2 md:-translate-y-2/3 z-30 flex flex-col items-center md:items-start gap-6 md:gap-8 px-6">
+      class="absolute left-0 right-0 bottom-[10%] md:bottom-auto md:left-0 md:right-auto md:top-1/2 md:-translate-y-2/3 z-30 flex flex-col items-center md:items-start gap-6 md:gap-8 px-6">
       <AnimatedContent :direction="isMobile ? 'vertical' : 'horizontal'" :reverse="true" :distance="80" :delay="0.2"
         className="flex flex-col items-center md:items-start w-full md:w-fit" sectionAnchor="hero">
         <div class="free anime flex flex-col items-center md:items-start gap-6 md:gap-8">
@@ -140,7 +140,7 @@ onUnmounted(() => {
 
     <!-- Right Side Content (Slogan Text) -->
     <div
-      class="absolute left-0 right-0 top-24 md:top-1/2 md:left-auto md:right-0 md:-translate-y-2/3 z-20 flex flex-col items-center md:items-end px-6 pointer-events-none">
+      class="absolute left-0 right-0 top-[16%] md:top-1/2 md:left-auto md:right-0 md:-translate-y-2/3 z-20 flex flex-col items-center md:items-end px-6 pointer-events-none">
       <AnimatedContent :direction="isMobile ? 'vertical' : 'horizontal'" :distance="80" :delay="0.35"
         className="flex flex-col items-center md:items-end w-full md:w-fit" sectionAnchor="hero">
         <h2

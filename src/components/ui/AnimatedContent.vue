@@ -61,9 +61,11 @@ const setInitialState = () => {
     const el = containerRef.value;
     if (!el) return;
     const axis = props.direction === 'horizontal' ? 'x' : 'y';
+    const otherAxis = props.direction === 'horizontal' ? 'y' : 'x';
     const offset = props.reverse ? -props.distance : props.distance;
     gsap.set(el, {
         [axis]: offset,
+        [otherAxis]: 0,
         scale: props.scale,
         opacity: props.animateOpacity ? props.initialOpacity : 1
     });
@@ -78,16 +80,19 @@ const playAnimation = () => {
     }
 
     const axis = props.direction === 'horizontal' ? 'x' : 'y';
+    const otherAxis = props.direction === 'horizontal' ? 'y' : 'x';
     const offset = props.reverse ? -props.distance : props.distance;
 
     anim = gsap.fromTo(el,
         {
             [axis]: offset,
+            [otherAxis]: 0,
             scale: props.scale,
             opacity: props.animateOpacity ? props.initialOpacity : 1
         },
         {
             [axis]: 0,
+            [otherAxis]: 0,
             scale: 1,
             opacity: 1,
             duration: props.duration,
@@ -111,12 +116,14 @@ const playExitAnimation = () => {
     }
 
     const axis = props.direction === 'horizontal' ? 'x' : 'y';
+    const otherAxis = props.direction === 'horizontal' ? 'y' : 'x';
     // Exit goes to the OPPOSITE side from which the element entered.
     // Enter: offset → 0.  Exit: 0 → -offset (slide out the other way).
     const offset = props.reverse ? -props.distance : props.distance;
 
     anim = gsap.to(el, {
         [axis]: -offset,
+        [otherAxis]: 0,
         scale: props.scale,
         opacity: props.animateOpacity ? props.initialOpacity : 1,
         duration: props.duration * 0.85,

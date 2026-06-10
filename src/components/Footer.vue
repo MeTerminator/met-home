@@ -39,11 +39,13 @@ onUnmounted(() => {
       </div>
 
       <FooterGroup title="SOCIALS" class="md:ml-auto" :isMagnetic="true" layout="row" :links="[
-        { href: links.qq, text: 'QQ' },
-        { href: links.email, text: 'Email' },
-        { href: links.github, text: 'Github' },
-        { href: links.bilibili, text: 'Bilibili' },
-        { href: links.steam, text: 'Steam' },
+        { href: links.qqMain, target: '_blank', text: 'QQ Main' },
+        { href: links.qqFurry, target: '_blank', text: 'QQ Furry' },
+        { href: links.x, target: '_blank', text: 'X' },
+        { href: links.email, target: '_blank', text: 'Email' },
+        { href: links.github, target: '_blank', text: 'Github' },
+        { href: links.bilibili, target: '_blank', text: 'Bilibili' },
+        { href: links.steam, target: '_blank', text: 'Steam' },
       ]" />
     </div>
   </footer>

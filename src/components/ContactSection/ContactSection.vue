@@ -9,7 +9,8 @@ import Tilted from '../ui/Tilted.vue';
 import { links } from '../../data/data';
 
 const contactLinks = [
-    { name: 'QQ', iconUrl: '/icon/QQ.svg', url: links.qq, color: '#3b82f6' },
+    { name: 'QQ Main', iconUrl: '/icon/QQ.svg', url: links.qqMain, color: '#3b82f6' },
+    { name: 'QQ Furry', iconUrl: '/icon/QQ.svg', url: links.qqFurry, color: '#3b82f6' },
     { name: 'Email', iconUrl: '/icon/email.svg', url: links.email, color: '#f472b6' },
     { name: 'GitHub', iconUrl: '/icon/github.svg', url: links.github, color: '#ffffff' },
     { name: 'Bilibili', iconUrl: '/icon/bilibili.svg', url: links.bilibili, color: '#fb7299' },
@@ -26,7 +27,7 @@ const hoverStates = ref<Record<string, boolean>>({});
         <Header color="Light" />
 
         <div
-            class="relative z-10 w-full max-w-7xl mx-auto flex-1 flex flex-col items-center justify-center gap-12 lg:gap-20">
+            class="relative z-10 w-full max-w-7xl mx-auto flex-1 flex flex-col items-center justify-center gap-6 lg:gap-16">
 
             <!-- Centered Header -->
             <AnimatedContent direction="vertical" :distance="30" sectionAnchor="contact" :delay="0.5">
@@ -81,7 +82,7 @@ const hoverStates = ref<Record<string, boolean>>({});
                                     </div>
                                     <div
                                         class="mt-2 text-white/50 text-xs font-black uppercase tracking-[0.2em] transition-colors">
-                                        - QQ -
+                                        - QQ Main -
                                     </div>
                                 </div>
                             </BorderGlow>

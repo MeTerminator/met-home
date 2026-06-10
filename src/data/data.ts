@@ -1,5 +1,7 @@
 export const links = {
-  qq: 'https://qm.qq.com/q/CUG7wzOxDE',
+  qqMain: 'https://qm.qq.com/q/CUG7wzOxDE',
+  qqFurry: 'https://qm.qq.com/q/irysRcYiC4',
+  x: 'https://x.com/MeTerminator666',
   wechat: 'https://u.wechat.com/MJsrTBCLlJQYaJ7HGM6QtFQ?s=2',
   email: 'mailto:13290003080@163.com',
   github: 'https://github.com/MeTerminator',

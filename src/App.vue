@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { gsap } from 'gsap';
 import { CustomEase } from 'gsap/CustomEase';
-import { onMounted } from 'vue';
+import { onMounted, ref, computed, onUnmounted } from 'vue';
 import GlobalLoading from './components/GlobalLoading.vue';
 import Cursor from './components/Cursor.vue';
 import HeaderNavigation from './components/HeaderNavigation.vue';
@@ -21,11 +21,19 @@ const dispatchSectionEvent = (anchor: string, action: 'enter' | 'reset' | 'exit'
 };
 
 
-const options = {
+const isMobile = ref(false);
+
+const updateMobileStatus = () => {
+  isMobile.value = typeof window !== 'undefined' && window.innerWidth <= 850;
+};
+
+const options = computed(() => ({
   licenseKey: 'gplv3-license',
   autoScrolling: true,
   scrollOverflow: false,
-  normalScrollElements: '.card, .show-card__text-content',
+  normalScrollElements: isMobile.value
+    ? '.card, .show-card__text-content, .show-content-container, .lyrics-container, .playlist-drawer-scroll'
+    : '',
   scrollHorizontally: false,
   navigation: false,
   navigationPosition: 'left',
@@ -73,9 +81,11 @@ const options = {
         .fromTo(`.${destination.anchor} .anime`, { y: '-30vh' }, { y: '0vh', duration: 1.1, stagger: -0.08, ease });
     }
   }
-};
+}));
 
 onMounted(() => {
+  updateMobileStatus();
+  window.addEventListener('resize', updateMobileStatus);
   // 控制台输出
   const styleTitle1 = "font-size: 20px;font-weight: 600;color: rgb(244,167,89);";
   const styleTitle2 = "font-size:12px;color: rgb(244,167,89);";
@@ -83,15 +93,19 @@ onMounted(() => {
   const title1 = "Home of MeTerminator";
   const title2 = `
   __  __   _______                  _             _             
- |  \\/  | |__   __|                (_)           | |            
- | \\  / | ___| | ___ _ __ _ __ ___  _ _ __   __ _| |_ ___  _ __ 
- | |\\/| |/ _ \\ |/ _ \\ '__| '_ \` _ \\| | \'_ \\ / _\` | __/ _ \\| '__|
+ |  \/  | |__   __|                (_)           | |            
+ | \  / | ___| | ___ _ __ _ __ ___  _ _ __   __ _| |_ ___  _ __ 
+ | |\/| |/ _ \\ |/ _ \\ '__| '_ \` _ \\| | \'_ \\ / _\` | __/ _ \\| '__|
  | |  | |  __/ |  __/ |  | | | | | | | | | | (_| | || (_) | |   
  |_|  |_|\___|_|\___|_|  |_| |_| |_|_|_| |_|\__,_|\__\___/|_|   
 
 `;
-  const content = `\n\n主页: https://www.met6.top:444/\nGitHub: https://github.com/MeTerminator\nQQ号: 3532095196\nEmail: 13290003080@163.com\n`;
+  const content = `\n\n主页: https://www.met6.top:444/\nGitHub: https://github.com/MeTerminator\nQQ Main: 3532095196\nQQ Furry: 3578235616\nEmail: 13290003080@163.com\n`;
   console.info(`%c${title1} %c${title2} %c${content}`, styleTitle1, styleTitle2, styleContent);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('resize', updateMobileStatus);
 });
 </script>
 
@@ -101,7 +115,7 @@ onMounted(() => {
   <HeaderNavigation />
   <ReloadPrompt />
 
-  <full-page ref="fullpage" :options="options" id="fullpage">
+  <full-page ref="fullpage" :options="options" id="fullpage" :key="isMobile ? 'mobile' : 'desktop'">
     <HeroSection data-anchor="hero" class="hero" />
     <ShowSection data-anchor="show" class="show" />
     <AboutSection data-anchor="about" class="about" />

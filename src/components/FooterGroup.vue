@@ -24,7 +24,7 @@ withDefaults(defineProps<{
           </Magentic>
         </template>
         <template v-else>
-          <a :href="link.href" class="flex w-fit items-center relative hover:text-white transition-colors">
+          <a :href="link.href" :target="link.target" class="flex w-fit items-center relative hover:text-white transition-colors">
             {{ link.text }}
           </a>
         </template>

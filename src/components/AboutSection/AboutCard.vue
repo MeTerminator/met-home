@@ -3,9 +3,11 @@ import { useTemplateRef, onMounted, onUnmounted, ref } from 'vue';
 import Tilted from '../ui/Tilted.vue';
 import AnimatedContent from '../ui/AnimatedContent.vue';
 import BorderGlow from '../ui/BorderGlow.vue';
+import { registerScrollChaining } from '../../lib/scrollHelper';
 
 const cardRef = useTemplateRef<HTMLElement>('cardRef');
 const isMobile = ref(false);
+let cleanupScroll: (() => void) | undefined;
 
 const updateSize = () => {
     isMobile.value = window.innerWidth <= 850;
@@ -29,11 +31,17 @@ onMounted(() => {
     updateSize();
     window.addEventListener('resize', updateSize);
     window.addEventListener('section:about:reset', handleReset);
+    if (cardRef.value) {
+        cleanupScroll = registerScrollChaining(cardRef.value);
+    }
 });
 
 onUnmounted(() => {
     window.removeEventListener('resize', updateSize);
     window.removeEventListener('section:about:reset', handleReset);
+    if (cleanupScroll) {
+        cleanupScroll();
+    }
 });
 </script>
 

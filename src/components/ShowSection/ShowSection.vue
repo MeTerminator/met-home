@@ -9,6 +9,7 @@ import AnimatedContent from '../ui/AnimatedContent.vue';
 import Magentic from '../ui/Magentic.vue';
 import ScrambleText from '../ui/ScrambleText.vue';
 import { links } from '../../data/data';
+import { registerScrollChaining } from '../../lib/scrollHelper';
 
 const baseTextRef = ref<InstanceType<typeof ScrambleText> | null>(null);
 const hoverTextRef = ref<InstanceType<typeof ScrambleText> | null>(null);
@@ -27,6 +28,10 @@ const leftImgMobileRef = ref<HTMLElement | null>(null);
 const rightImgMobileRef = ref<HTMLElement | null>(null);
 
 const cardWrapperRef = ref<HTMLElement | null>(null);
+const contentContainerRef = ref<HTMLElement | null>(null);
+const textContentRef = ref<HTMLElement | null>(null);
+let cleanupContent: (() => void) | undefined;
+let cleanupText: (() => void) | undefined;
 
 const isPortrait = ref(false);
 const showCardBlur = ref(false);
@@ -63,11 +68,20 @@ onMounted(() => {
     // Mobile
     if (leftImgMobileRef.value) gsap.set(leftImgMobileRef.value, { clipPath: 'inset(0% 0% 0% 0%)', webkitClipPath: 'inset(0% 0% 0% 0%)', opacity: 1, zIndex: 2 });
     if (rightImgMobileRef.value) gsap.set(rightImgMobileRef.value, { clipPath: 'inset(0% 0% 0% 100%)', webkitClipPath: 'inset(0% 0% 0% 100%)', opacity: 0, zIndex: 1 });
+
+    if (contentContainerRef.value) {
+        cleanupContent = registerScrollChaining(contentContainerRef.value);
+    }
+    if (textContentRef.value) {
+        cleanupText = registerScrollChaining(textContentRef.value);
+    }
 });
 
 onUnmounted(() => {
     window.removeEventListener('resize', updatePortraitStatus);
     window.removeEventListener('section:show:reset', resetBlur);
+    if (cleanupContent) cleanupContent();
+    if (cleanupText) cleanupText();
 });
 
 async function toggle() {
@@ -159,7 +173,7 @@ const moveNext = () => {
         <Bulge type="Dark" />
         <Header color="Dark" />
 
-        <div class="show-content-container">
+        <div ref="contentContainerRef" class="show-content-container">
             <!-- ── Background Images (Desktop Only Viewport) ── -->
             <div class="show-bg-viewport" v-if="!isPortrait">
                 <div ref="leftImgRef" class="show-bg-panel show-bg--main">
@@ -208,7 +222,7 @@ const moveNext = () => {
                                 <p class="show-card__label shrink-0">{{ isFurry ? '— Furry Set -' : '— Main Set -' }}
                                 </p>
 
-                                <div class="show-card__text-content flex-1 overflow-y-auto">
+                                <div ref="textContentRef" class="show-card__text-content flex-1 overflow-y-auto">
                                     <div v-show="!isFurry" class="show-card__description">
                                         Hi, my friend. I am <span class="font-bold">MeTerminator</span>, a versatile
                                         full-stack developer and cybersecurity architect dedicated to crafting
