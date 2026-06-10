@@ -79,6 +79,20 @@ export default defineConfig({
         maximumFileSizeToCacheInBytes: 100 * 1024 * 1024, // 100MB
         runtimeCaching: [
           {
+            urlPattern: /^https:\/\/music\.met6\.top:444\/.*\.mp3$/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'music-audio-cache',
+              expiration: {
+                maxEntries: 20,
+                maxAgeSeconds: 60 * 60 * 24 * 7 // 7 Days
+              },
+              cacheableResponse: {
+                statuses: [0, 200]
+              }
+            }
+          },
+          {
             // Specifically match WebP and AVIF using regex to handle potential MIME type issues
             urlPattern: /\.(?:webp|avif)(?:\?.*)?$/i,
             handler: 'CacheFirst',
@@ -162,4 +176,18 @@ export default defineConfig({
     compression(),
     excludeDsStore()
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('three')) return 'vendor-three';
+            if (id.includes('face-api.js')) return 'vendor-face-api';
+            if (id.includes('gsap')) return 'vendor-gsap';
+            return 'vendor';
+          }
+        }
+      }
+    }
+  },
 })

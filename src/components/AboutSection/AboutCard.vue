@@ -3,11 +3,9 @@ import { useTemplateRef, onMounted, onUnmounted, ref } from 'vue';
 import Tilted from '../ui/Tilted.vue';
 import AnimatedContent from '../ui/AnimatedContent.vue';
 import BorderGlow from '../ui/BorderGlow.vue';
-import { registerScrollChaining } from '../../lib/scrollHelper';
 
 const cardRef = useTemplateRef<HTMLElement>('cardRef');
 const isMobile = ref(false);
-let cleanupScroll: (() => void) | undefined;
 
 const updateSize = () => {
     isMobile.value = window.innerWidth <= 850;
@@ -31,17 +29,11 @@ onMounted(() => {
     updateSize();
     window.addEventListener('resize', updateSize);
     window.addEventListener('section:about:reset', handleReset);
-    if (cardRef.value) {
-        cleanupScroll = registerScrollChaining(cardRef.value);
-    }
 });
 
 onUnmounted(() => {
     window.removeEventListener('resize', updateSize);
     window.removeEventListener('section:about:reset', handleReset);
-    if (cleanupScroll) {
-        cleanupScroll();
-    }
 });
 </script>
 
@@ -54,7 +46,7 @@ onUnmounted(() => {
             <BorderGlow :edgeSensitivity="30" glowColor="40 80 80" backgroundColor="#06001000" :borderRadius="28"
                 :glowRadius="40" :glowIntensity="1" :coneSpread="25" :animated="false"
                 :colors="['#c084fc', '#f472b6', '#38bdf8']">
-                <div ref="cardRef" class="card relative overflow-hidden flex justify-between mx-auto w-full p-6 md:p-10"
+                <div ref="cardRef" v-scroll-chain class="card relative overflow-hidden flex justify-between mx-auto w-full p-6 md:p-10"
                     style="background-color: rgba(2, 2, 17, 0.65); border-radius: 30px; backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%); border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 2.4px 1.9px 3.2px -9px rgba(0, 0, 0, 0.5), 18px 14px 80px -9px rgba(0, 0, 0, 0.3);">
 
                     <!-- Glowing Background Blob -->

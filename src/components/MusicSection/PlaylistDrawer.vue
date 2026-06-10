@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
 import { musicStore } from '../../store/music';
-import { registerScrollChaining } from '../../lib/scrollHelper';
 
 const props = defineProps<{
     hideFab?: boolean;
@@ -9,25 +7,11 @@ const props = defineProps<{
 
 const { state, togglePlaylist, playSong } = musicStore;
 
-const playlistScrollRef = ref<HTMLElement | null>(null);
-let cleanupScroll: (() => void) | undefined;
-
 const handleSelect = (index: number) => {
     playSong(index);
     togglePlaylist();
 };
-
-onMounted(() => {
-    if (playlistScrollRef.value) {
-        cleanupScroll = registerScrollChaining(playlistScrollRef.value);
-    }
-});
-
-onUnmounted(() => {
-    if (cleanupScroll) {
-        cleanupScroll();
-    }
-});</script>
+</script>
 
 <template>
     <div :class="[
@@ -49,7 +33,7 @@ onUnmounted(() => {
                         </svg>
                     </button>
                 </div>
-                <div ref="playlistScrollRef" class="playlist-drawer-scroll overflow-y-auto max-h-[calc(70vh-4rem)] p-2 space-y-1">
+                <div v-scroll-chain class="playlist-drawer-scroll overflow-y-auto max-h-[calc(70vh-4rem)] p-2 space-y-1">
                     <button v-for="(song, index) in state.playlist" :key="song.songmid" @click="handleSelect(index)"
                         :class="[
                             'w-full flex items-center gap-3 p-2 rounded-lg transition-all text-left cursor-target',

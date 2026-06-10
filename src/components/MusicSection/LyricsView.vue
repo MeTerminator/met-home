@@ -1,27 +1,12 @@
 <script setup lang="ts">
-import { computed, ref, onMounted, onUnmounted } from 'vue';
+import { computed } from 'vue';
 import { LyricPlayer } from "@applemusic-like-lyrics/vue";
 import { musicStore } from '../../store/music';
-import { registerScrollChaining } from '../../lib/scrollHelper';
 import "@applemusic-like-lyrics/core/style.css";
 
 const { state, seek: seekStore } = musicStore;
 
 // No unused refs
-const lyricsContainerRef = ref<HTMLElement | null>(null);
-let cleanupScroll: (() => void) | undefined;
-
-onMounted(() => {
-    if (lyricsContainerRef.value) {
-        cleanupScroll = registerScrollChaining(lyricsContainerRef.value);
-    }
-});
-
-onUnmounted(() => {
-    if (cleanupScroll) {
-        cleanupScroll();
-    }
-});
 
 const lyricPlayerStyles = computed(() => ({
     '--amll-lp-font-size': '2rem',
@@ -46,7 +31,7 @@ const handleLineClick = (line: any) => {
 </script>
 
 <template>
-    <div ref="lyricsContainerRef" class="lyrics-container w-full h-[75vh] md:h-[640px] relative overflow-hidden">
+    <div v-scroll-chain class="lyrics-container w-full h-[75vh] md:h-[640px] relative overflow-hidden">
         <div v-if="state.isLoadingLyrics"
             class="absolute inset-0 flex items-center justify-center text-black/20 italic text-xl">
             Loading lyrics...

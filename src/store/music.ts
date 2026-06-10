@@ -30,29 +30,32 @@ export const useMusicStore = () => {
         isPlaylistOpen: false,
     });
 
-    const audio = new Audio();
-    audio.volume = state.volume;
+    let audio: HTMLAudioElement | null = null;
 
-    // Sync state with audio events
-    audio.addEventListener('timeupdate', () => {
-        state.currentTime = audio.currentTime * 1000;
-    });
+    if (typeof window !== 'undefined') {
+        audio = new Audio();
+        audio.volume = state.volume;
 
-    audio.addEventListener('durationchange', () => {
-        state.duration = audio.duration * 1000;
-    });
+        audio.addEventListener('timeupdate', () => {
+            if (audio) state.currentTime = audio.currentTime * 1000;
+        });
 
-    audio.addEventListener('play', () => {
-        state.isPlaying = true;
-    });
+        audio.addEventListener('durationchange', () => {
+            if (audio) state.duration = audio.duration * 1000;
+        });
 
-    audio.addEventListener('pause', () => {
-        state.isPlaying = false;
-    });
+        audio.addEventListener('play', () => {
+            state.isPlaying = true;
+        });
 
-    audio.addEventListener('ended', () => {
-        next();
-    });
+        audio.addEventListener('pause', () => {
+            state.isPlaying = false;
+        });
+
+        audio.addEventListener('ended', () => {
+            next();
+        });
+    }
 
     const fetchSongs = async () => {
         try {
@@ -89,12 +92,15 @@ export const useMusicStore = () => {
         if (index < 0 || index >= state.playlist.length) return;
         state.currentSongIndex = index;
         const song = state.playlist[index];
-        audio.src = song.url;
-        audio.play().catch(e => console.error('Audio playback failed:', e));
+        if (audio) {
+            audio.src = song.url;
+            audio.play().catch(e => console.error('Audio playback failed:', e));
+        }
         fetchLyricsData(song.songmid);
     };
 
     const togglePlay = () => {
+        if (!audio) return;
         if (state.isPlaying) {
             audio.pause();
         } else {
@@ -134,7 +140,7 @@ export const useMusicStore = () => {
 
     const setVolume = (v: number) => {
         state.volume = v;
-        audio.volume = v;
+        if (audio) audio.volume = v;
     };
 
     const togglePlaybackMode = () => {
@@ -142,7 +148,7 @@ export const useMusicStore = () => {
     };
 
     const seek = (timeMs: number) => {
-        audio.currentTime = timeMs / 1000;
+        if (audio) audio.currentTime = timeMs / 1000;
     };
 
     return {
