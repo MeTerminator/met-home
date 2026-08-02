@@ -12,7 +12,9 @@ const staggeredColors = ['#1a1a1a', '#FC5A8A', '#2ABFC5'];
 
 onMounted(() => {
   // Simple resource loading tracking
-  const images = Array.from(document.querySelectorAll('img'));
+  const images = Array.from(document.querySelectorAll('img')).filter(
+    (image) => !image.closest('.gallery-section')
+  );
   // Images + Fonts + arbitrary delay to ensure smooth start
   const totalResources = images.length + 1;
   let loadedCount = 0;
@@ -68,7 +70,7 @@ onMounted(() => {
       progress.value = 100;
       finishLoading();
     }
-  }, 10000);
+  }, 3000);
 
   onUnmounted(() => clearTimeout(timeoutId));
 });

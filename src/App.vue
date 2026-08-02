@@ -8,13 +8,15 @@ import HeaderNavigation from './components/HeaderNavigation.vue';
 import HeroSection from './components/HeroSection/HeroSection.vue';
 import AboutSection from './components/AboutSection/AboutSection.vue';
 import ShowSection from './components/ShowSection/ShowSection.vue';
+import GallerySection from './components/GallerySection/GallerySection.vue';
+import BlogSection from './components/BlogSection/BlogSection.vue';
 import MusicSection from './components/MusicSection/MusicSection.vue';
 import ContactSection from './components/ContactSection/ContactSection.vue';
 import ReloadPrompt from './components/ReloadPrompt.vue';
 
 gsap.registerPlugin(CustomEase);
 
-const ANCHORS = ['hero', 'show', 'about', 'music', 'contact'];
+const ANCHORS = ['hero', 'show', 'about', 'gallery', 'blog', 'music', 'contact'];
 
 const dispatchSectionEvent = (anchor: string, action: 'enter' | 'reset' | 'exit') => {
   window.dispatchEvent(new Event(`section:${anchor}:${action}`));
@@ -59,7 +61,7 @@ const options = computed(() => ({
     dispatchSectionEvent(origin.anchor, 'exit');
 
     // 2. Handle Dark/Light theme switching
-    const isDark = ['about', 'contact'].includes(destination.anchor);
+    const isDark = ['about', 'blog', 'contact'].includes(destination.anchor);
     document.body.classList.toggle('darkGradient', isDark);
 
     // 3. Trigger geometric ripple and stagger animations
@@ -119,6 +121,8 @@ onUnmounted(() => {
     <HeroSection data-anchor="hero" class="hero" />
     <ShowSection data-anchor="show" class="show" />
     <AboutSection data-anchor="about" class="about" />
+    <GallerySection data-anchor="gallery" class="gallery" />
+    <BlogSection data-anchor="blog" class="blog" />
     <MusicSection data-anchor="music" class="music" />
     <ContactSection data-anchor="contact" class="contact" />
   </full-page>
