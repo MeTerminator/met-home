@@ -2,9 +2,14 @@ declare module 'virtual:pwa-register/vue' {
   import type { Ref } from 'vue'
   export interface RegisterSWOptions {
     immediate?: boolean
+    onNeedReload?: () => void
     onNeedRefresh?: () => void
     onOfflineReady?: () => void
     onRegistered?: (registration: ServiceWorkerRegistration | undefined) => void
+    onRegisteredSW?: (
+      swScriptUrl: string,
+      registration: ServiceWorkerRegistration | undefined,
+    ) => void
     onRegisterError?: (error: any) => void
   }
 

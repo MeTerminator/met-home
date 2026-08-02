@@ -1,11 +1,83 @@
 <script setup lang="ts">
+import { onMounted, onUnmounted } from 'vue'
 import { useRegisterSW } from 'virtual:pwa-register/vue'
+
+const UPDATE_INTERVAL = 60 * 1000
+const UPDATE_THROTTLE = 15 * 1000
+
+let registration: ServiceWorkerRegistration | undefined
+let updateTimer: ReturnType<typeof setInterval> | undefined
+let updateInProgress = false
+let lastUpdateCheck = 0
+
+const checkForUpdates = async () => {
+  if (
+    !registration?.active ||
+    !navigator.onLine ||
+    updateInProgress ||
+    Date.now() - lastUpdateCheck < UPDATE_THROTTLE
+  ) {
+    return
+  }
+
+  updateInProgress = true
+  lastUpdateCheck = Date.now()
+
+  try {
+    // update() fetches sw.js again and starts the Workbox update lifecycle when
+    // its generated precache manifest has changed.
+    await registration.update()
+  } catch (error) {
+    console.warn('[PWA] Failed to check for an update:', error)
+  } finally {
+    updateInProgress = false
+  }
+}
 
 const {
   offlineReady,
   needRefresh,
   updateServiceWorker,
-} = useRegisterSW()
+} = useRegisterSW({
+  immediate: true,
+  onRegisteredSW(_swUrl, swRegistration) {
+    registration = swRegistration
+    void checkForUpdates()
+
+    updateTimer = setInterval(() => {
+      void checkForUpdates()
+    }, UPDATE_INTERVAL)
+  },
+  onRegisterError(error) {
+    console.error('[PWA] Service worker registration failed:', error)
+  },
+})
+
+const handleVisibilityChange = () => {
+  if (document.visibilityState === 'visible') {
+    void checkForUpdates()
+  }
+}
+
+const handleWindowActive = () => {
+  void checkForUpdates()
+}
+
+onMounted(() => {
+  document.addEventListener('visibilitychange', handleVisibilityChange)
+  window.addEventListener('focus', handleWindowActive)
+  window.addEventListener('online', handleWindowActive)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('visibilitychange', handleVisibilityChange)
+  window.removeEventListener('focus', handleWindowActive)
+  window.removeEventListener('online', handleWindowActive)
+
+  if (updateTimer) {
+    clearInterval(updateTimer)
+  }
+})
 
 const close = () => {
   offlineReady.value = false

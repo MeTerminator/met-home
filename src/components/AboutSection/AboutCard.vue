@@ -4,6 +4,11 @@ import Tilted from '../ui/Tilted.vue';
 import AnimatedContent from '../ui/AnimatedContent.vue';
 import BorderGlow from '../ui/BorderGlow.vue';
 
+const emit = defineEmits<{
+    'avatar-enter': [];
+    'avatar-leave': [];
+}>();
+
 const cardRef = useTemplateRef<HTMLElement>('cardRef');
 const isMobile = ref(false);
 
@@ -56,7 +61,8 @@ onUnmounted(() => {
 
                     <!-- Profile Frame -->
                     <div class="avatar transition-all duration-500 w-[40%] bg-cover bg-no-repeat ml-0 my-0 object-contain mr-5"
-                        style="background-image: url('/img/met-furry_pendant.webp');">
+                        style="background-image: url('/img/met-furry_pendant.webp?v=20260802');"
+                        @mouseenter="emit('avatar-enter')" @mouseleave="emit('avatar-leave')">
                     </div>
 
                     <!-- Content Area -->
@@ -149,7 +155,7 @@ onUnmounted(() => {
 
 .avatar {
     background-position: center;
-    background-size: contain;
+    background-size: 140% auto;
 }
 
 .avatar:hover {
@@ -183,8 +189,8 @@ onUnmounted(() => {
     }
 
     .avatar {
-        width: 160px !important;
-        height: 160px !important;
+        width: 176px !important;
+        height: 176px !important;
         margin-right: 0 !important;
         margin-bottom: 0 !important;
         flex-shrink: 0;

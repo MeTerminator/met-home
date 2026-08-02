@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
+import { gsap } from 'gsap';
 import Header from '../Header.vue';
 import Bulge from '../ui/Bulge.vue';
 import BorderGlow from '../ui/BorderGlow.vue';
@@ -18,6 +19,51 @@ const contactLinks = [
 ];
 
 const hoverStates = ref<Record<string, boolean>>({});
+
+const dividerRef = useTemplateRef<HTMLDivElement>('dividerRef');
+let dividerAnimation: gsap.core.Tween | null = null;
+
+const resetDivider = () => {
+    if (!dividerRef.value) return;
+
+    dividerAnimation?.kill();
+    gsap.set(dividerRef.value, {
+        clipPath: 'inset(0 0 100% 0)',
+        opacity: 0,
+    });
+};
+
+const revealDivider = () => {
+    if (!dividerRef.value) return;
+
+    dividerAnimation?.kill();
+    dividerAnimation = gsap.fromTo(
+        dividerRef.value,
+        {
+            clipPath: 'inset(0 0 100% 0)',
+            opacity: 1,
+        },
+        {
+            clipPath: 'inset(0 0 0% 0)',
+            opacity: 1,
+            duration: 1.2,
+            delay: 0.35,
+            ease: 'power3.inOut',
+        },
+    );
+};
+
+onMounted(() => {
+    resetDivider();
+    window.addEventListener('section:contact:enter', revealDivider);
+    window.addEventListener('section:contact:reset', resetDivider);
+});
+
+onUnmounted(() => {
+    dividerAnimation?.kill();
+    window.removeEventListener('section:contact:enter', revealDivider);
+    window.removeEventListener('section:contact:reset', resetDivider);
+});
 </script>
 
 <template>
@@ -36,14 +82,15 @@ const hoverStates = ref<Record<string, boolean>>({});
                 </h2>
             </AnimatedContent>
 
-            <!-- Content Grid: Cards + Links -->
-            <div class="w-full flex flex-col lg:flex-row items-center justify-center gap-12 lg:gap-32 px-4 lg:px-8">
+            <!-- Content Grid: QR cards | divider | contact links -->
+            <div
+                class="w-full flex flex-col lg:grid lg:grid-cols-[minmax(0,1fr)_1px_minmax(0,1fr)] items-center lg:items-stretch justify-center gap-12 lg:gap-10 px-4 lg:px-8">
 
                 <!-- Left Side: QR Contact Cards (Hidden on Mobile) -->
-                <div class="hidden lg:flex w-full lg:w-7/10 flex-col sm:flex-row items-center justify-center gap-12">
+                <div class="hidden lg:flex w-full items-center justify-center gap-8">
                     <!-- WeChat Card -->
                     <AnimatedContent direction="horizontal" :distance="-50" sectionAnchor="contact" :delay="0.1"
-                        className="w-full sm:w-1/2 max-w-[420px]">
+                        className="w-full min-w-0 max-w-[280px]">
                         <Tilted width="100%" height="100%" :rotateAmplitude="5" :scale="true"
                             card-class="w-full h-full">
                             <BorderGlow className="p-8 text-center h-full flex flex-col justify-center"
@@ -67,7 +114,7 @@ const hoverStates = ref<Record<string, boolean>>({});
 
                     <!-- QQ Card -->
                     <AnimatedContent direction="horizontal" :distance="-50" sectionAnchor="contact" :delay="0.3"
-                        className="w-full sm:w-1/2 max-w-[420px]">
+                        className="w-full min-w-0 max-w-[280px]">
                         <Tilted width="100%" height="100%" :rotateAmplitude="5" :scale="true"
                             card-class="w-full h-full">
                             <BorderGlow className="p-8 text-center h-full flex flex-col justify-center"
@@ -90,14 +137,21 @@ const hoverStates = ref<Record<string, boolean>>({});
                     </AnimatedContent>
                 </div>
 
+                <!-- Desktop Divider -->
+                <div ref="dividerRef"
+                    class="hidden lg:block w-px h-full min-h-72 bg-gradient-to-b from-transparent via-white/25 to-transparent"
+                    style="clip-path: inset(0 0 100% 0); opacity: 0;"
+                    aria-hidden="true">
+                </div>
+
                 <!-- Right Side: Digital Identity Links -->
-                <div class="w-full lg:w-3/10 flex flex-col items-center gap-8 lg:gap-12">
-                    <div class="w-full flex flex-col gap-4">
+                <div class="w-full flex flex-col items-center justify-center gap-8 lg:gap-12">
+                    <div class="w-full grid grid-cols-1 lg:grid-cols-2 lg:grid-rows-3 lg:grid-flow-col gap-4">
                         <AnimatedContent v-for="(link, index) in contactLinks" :key="link.name" direction="vertical"
                             :distance="20" sectionAnchor="contact" :delay="0.6 + (index * 0.1)"
                             className="cursor-target w-full">
                             <Magentic :strength="20" :href="link.url" target="_blank"
-                                className="group relative w-full h-20 flex items-center gap-6 px-8 rounded-3xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all duration-300"
+                                className="group relative w-full h-20 flex items-center gap-4 px-5 rounded-3xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all duration-300"
                                 @mouseenter="hoverStates[link.name] = true"
                                 @mouseleave="hoverStates[link.name] = false">
 
